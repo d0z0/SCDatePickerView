@@ -3,10 +3,12 @@ target 'SCDatePickerView', :exclusive => true do
 end
 
 target 'Tests', :exclusive => true do
-  pod "SCDatePickerView", :path => "../"
 
-  pod 'Specta', '~> 0.2.1'
-  pod 'Expecta'
-  pod 'FBSnapshotTestCase'
-  pod 'EXPMatchers+FBSnapshotTest'
+#  pod "SCDatePickerView", :path => "../"
+
+#  pod 'Specta', '~> 0.2.1'
+#  pod 'Expecta'
+#  pod 'FBSnapshotTestCase'
+#  pod 'EXPMatchers+FBSnapshotTest'
+
 end
