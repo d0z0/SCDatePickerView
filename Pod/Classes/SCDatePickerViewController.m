@@ -90,13 +90,14 @@ static NSUInteger const daysInWeek = 7;
         self.currentMonthOffset = 0;
     
     if(!self.headerFont)
-        self.headerFont = [UIFont fontWithName:@"HelveticaNeue-Bold" size:13.0f];
+        self.headerFont = [UIFont fontWithName:@"HelveticaNeue-Bold" size:16.0f];
 
     if(!self.dayOfWeekFont)
-        self.dayOfWeekFont = [UIFont fontWithName:@"HelveticaNeue-Light" size:11.0f];
+        self.dayOfWeekFont = [UIFont fontWithName:@"HelveticaNeue" size:10.0f];
 
     if(!self.dateFont)
-        self.dateFont = [UIFont fontWithName:@"HelveticaNeue" size:16.0f];
+        self.dateFont = [UIFont fontWithName:@"HelveticaNeue-Light" size:18.0f];
+//        self.dateFont = [UIFont fontWithName:@"HelveticaNeue-Light" size:16.0f];
     
     if(!self.dateColor)
         self.dateColor = [UIColor blackColor];
@@ -115,15 +116,14 @@ static NSUInteger const daysInWeek = 7;
     {
         self.monthYearFormatter = [[NSDateFormatter alloc] init];
         self.monthYearFormatter.calendar = self.calendar;
-        self.monthYearFormatter.dateFormat = [NSDateFormatter dateFormatFromTemplate:@"yyyy LLLL" options:0 locale:self.calendar.locale];
+        self.monthYearFormatter.dateFormat = [NSDateFormatter dateFormatFromTemplate:@"yyyyLLLL" options:0 locale:self.calendar.locale];
     }
-    
+
     NSDateComponents *offsetComponents = [[NSDateComponents alloc] init];
-    //    offsetComponents.year = -1;
-    offsetComponents.day = -1;
+    offsetComponents.day = 0;
     if(!self.startDate)
         self.startDate = [self.calendar dateByAddingComponents:offsetComponents toDate:[NSDate date] options:0];
-    
+    offsetComponents.day = -1;
     offsetComponents.year = 1;
     
     if(!self.endDate)
@@ -146,17 +146,6 @@ static NSUInteger const daysInWeek = 7;
     [self.collectionView registerClass:[SCDatePickerViewHeader class] forSupplementaryViewOfKind:UICollectionElementKindSectionHeader withReuseIdentifier:SCDatePickerViewHeaderIdentifier];
 }
 
-- (NSString *)currentMonthName
-{
-    return [self monthNameForSection:self.currentMonthOffset];
-}
-
-- (NSString *)monthNameForSection:(int)section
-{
-    NSDate *firstDateOfMonth = [self firstDateOfMonthForSection:section];
-    return [self.monthYearFormatter stringFromDate:firstDateOfMonth];
-}
-
 - (UICollectionReusableView *)collectionView:(UICollectionView *)collectionView viewForSupplementaryElementOfKind:(NSString *)kind atIndexPath:(NSIndexPath *)indexPath
 {
     if (kind == UICollectionElementKindSectionHeader) {
@@ -168,14 +157,13 @@ static NSUInteger const daysInWeek = 7;
         NSDate *firstDateOfMonth = [self firstDateOfMonthForSection:indexPath.section];
 
         [headerView.monthYearLabel setFrame:CGRectMake(self.monthHeaderHeight, 0.0f, self.collectionView.bounds.size.width - (self.monthHeaderHeight * 2), self.monthHeaderHeight)];
-//        headerView.monthYearLabel.text = [NSString stringWithFormat:@"%@ %@", [self monthNameForSection:indexPath.section] [self yearNumberForSection:indexPath.section]];
+        headerView.monthYearLabel.text = [self.monthYearFormatter stringFromDate:firstDateOfMonth];
 
         headerView.monthYearLabel.font = self.headerFont;
         
         headerView.previousMonthBtn.titleLabel.font = self.headerFont;
         headerView.nextMonthBtn.titleLabel.font = self.headerFont;
 
-        
         NSDateComponents *offset = [[NSDateComponents alloc] init];
         offset.day = -1;
         NSDate *lastDateOfPrevMonth = [self.calendar dateByAddingComponents:offset toDate:firstDateOfMonth options:0];
@@ -325,10 +313,12 @@ static NSUInteger const daysInWeek = 7;
 - (NSDate *)dateForItemAtIndexPath:(NSIndexPath *)indexPath
 {
     NSDateComponents *cellOffset = [[NSDateComponents alloc] init];
+    
     if(!self.continousCalendar)
         cellOffset.month = self.currentMonthOffset;
     else
         cellOffset.month = indexPath.section;
+    
     NSUInteger weekOffset = [self.calendar ordinalityOfUnit:NSDayCalendarUnit inUnit:NSWeekCalendarUnit forDate:[self firstDateOfMonthForSection:cellOffset.month]];
     cellOffset.day = indexPath.item + ((weekOffset - 1) * -1);
     return [self.calendar dateByAddingComponents:cellOffset toDate:[self firstOfStartDate] options:0];

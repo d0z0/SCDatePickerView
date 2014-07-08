@@ -36,20 +36,27 @@
     // datePickerVC.rangeSelection = YES;
 
     // -- Appearance customization
-    // datePickerVC.monthHeaderHeight = 60.0f;
+     datePickerVC.monthHeaderHeight = 40.0f;
     // datePickerVC.headerFont = [UIFont fontWithName:@"HelveticaNeue-Bold" size:20.0f];
     // datePickerVC.dayOfWeekFont = [UIFont fontWithName:@"HelveticaNeue-Light" size:12.0f];
     // datePickerVC.dateFont = [UIFont fontWithName:@"HelveticaNeue-Light" size:18.0f];
     // datePickerVC.dateColor = [UIColor blackColor];
     // datePickerVC.selectedDateColor = [UIColor redColor];
 
-    [datePickerVC nextMonth];
-    NSLog(@"currentMonth-%@", [datePickerVC currentMonthName]);
-    
     [self.window setRootViewController:navigation];
     [self.window makeKeyAndVisible];
     
     return YES;
+}
+
+- (void)SCDatePickerViewController:(SCDatePickerViewController *)controller didSelectDate:(NSDate *)date
+{
+    NSLog(@"Date selected: %@", date);
+}
+
+- (void)SCDatePickerViewController:(SCDatePickerViewController *)controller didSelectDateRangeFrom:(NSDate *)fromDate to:(NSDate *)toDate
+{
+    NSLog(@"Date range selected: %@ - %@", fromDate, toDate);
 }
 
 - (UIView *)SCDatePickerViewController:(SCDatePickerViewController *)controller todayBackgroundViewForDate:(NSDate *)date
