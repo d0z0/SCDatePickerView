@@ -10,18 +10,15 @@
 Pod::Spec.new do |s|
   s.name             = "SCDatePickerView"
   s.version          = "0.1.0"
-  s.summary          = "A short description of SCDatePickerView."
+  s.summary          = "SCDatePickerView is a date picker that supports single and range selection, and has a very customizalbe appearance"
   s.description      = <<-DESC
-                       An optional longer description of SCDatePickerView
-
-                       * Markdown format.
-                       * Don't worry about the indent, we strip it!
+                       SCDatePickerView is a date picker that supports single and range selection, and has a very customizalbe appearance
                        DESC
-  s.homepage         = "https://github.com/<GITHUB_USERNAME>/SCDatePickerView"
+  s.homepage         = "https://github.com/saturnine/SCDatePickerView"
   # s.screenshots     = "www.example.com/screenshots_1", "www.example.com/screenshots_2"
   s.license          = 'MIT'
   s.author           = { "Schubert" => "cardozoschubert@gmail.com" }
-  s.source           = { :git => "https://github.com/<GITHUB_USERNAME>/SCDatePickerView.git", :tag => s.version.to_s }
+  s.source           = { :git => "https://github.com/saturnine/SCDatePickerView.git", :tag => s.version.to_s }
   # s.social_media_url = 'https://twitter.com/<TWITTER_USERNAME>'
 
   s.platform     = :ios, '7.0'

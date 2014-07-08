@@ -7,8 +7,9 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "SCDatePickerViewController.h"
 
-@interface SCDatePickerAppDelegate : UIResponder <UIApplicationDelegate>
+@interface SCDatePickerAppDelegate : UIResponder <UIApplicationDelegate, SCDatePickerViewDelegate>
 
 @property (strong, nonatomic) UIWindow *window;
 
