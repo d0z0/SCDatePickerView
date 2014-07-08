@@ -116,7 +116,6 @@ static NSUInteger const daysInWeek = 7;
         self.monthYearFormatter = [[NSDateFormatter alloc] init];
         self.monthYearFormatter.calendar = self.calendar;
         self.monthYearFormatter.dateFormat = [NSDateFormatter dateFormatFromTemplate:@"yyyy LLLL" options:0 locale:self.calendar.locale];
-
     }
     
     NSDateComponents *offsetComponents = [[NSDateComponents alloc] init];
@@ -141,10 +140,21 @@ static NSUInteger const daysInWeek = 7;
     self.collectionView.delegate = self;
     self.collectionView.dataSource = self;
     
-    NSLog(@"printing calendar from %@ to %@", self.startDate, self.endDate);
+    NSLog(@"Drawing calendar from %@ to %@", self.startDate, self.endDate);
     [self.collectionView setBackgroundColor:[UIColor whiteColor]];
     [self.collectionView registerClass:[SCDatePickerViewCell class] forCellWithReuseIdentifier:kSCDatePickerViewCellIdentifier];
     [self.collectionView registerClass:[SCDatePickerViewHeader class] forSupplementaryViewOfKind:UICollectionElementKindSectionHeader withReuseIdentifier:SCDatePickerViewHeaderIdentifier];
+}
+
+- (NSString *)currentMonthName
+{
+    return [self monthNameForSection:self.currentMonthOffset];
+}
+
+- (NSString *)monthNameForSection:(int)section
+{
+    NSDate *firstDateOfMonth = [self firstDateOfMonthForSection:section];
+    return [self.monthYearFormatter stringFromDate:firstDateOfMonth];
 }
 
 - (UICollectionReusableView *)collectionView:(UICollectionView *)collectionView viewForSupplementaryElementOfKind:(NSString *)kind atIndexPath:(NSIndexPath *)indexPath
@@ -158,10 +168,11 @@ static NSUInteger const daysInWeek = 7;
         NSDate *firstDateOfMonth = [self firstDateOfMonthForSection:indexPath.section];
 
         [headerView.monthYearLabel setFrame:CGRectMake(self.monthHeaderHeight, 0.0f, self.collectionView.bounds.size.width - (self.monthHeaderHeight * 2), self.monthHeaderHeight)];
-        headerView.monthYearLabel.text = [self.monthYearFormatter stringFromDate:firstDateOfMonth];
+//        headerView.monthYearLabel.text = [NSString stringWithFormat:@"%@ %@", [self monthNameForSection:indexPath.section] [self yearNumberForSection:indexPath.section]];
+
         headerView.monthYearLabel.font = self.headerFont;
         
-        headerView.prevMonthBtn.titleLabel.font = self.headerFont;
+        headerView.previousMonthBtn.titleLabel.font = self.headerFont;
         headerView.nextMonthBtn.titleLabel.font = self.headerFont;
 
         
@@ -174,11 +185,11 @@ static NSUInteger const daysInWeek = 7;
 
         if([self compareDate:self.startDate withDate:lastDateOfPrevMonth] == NSOrderedDescending)
         {
-            [headerView.prevMonthBtn setEnabled:NO];
+            [headerView.previousMonthBtn setEnabled:NO];
         }
         else
         {
-            [headerView.prevMonthBtn setEnabled:YES];
+            [headerView.previousMonthBtn setEnabled:YES];
         }
 
         if([self compareDate:self.endDate withDate:firstDateOfNextMonth] == NSOrderedAscending)
@@ -192,10 +203,10 @@ static NSUInteger const daysInWeek = 7;
 
         if(!self.continousCalendar)
         {
-            [headerView.prevMonthBtn setFrame:CGRectMake(0.0f, 0.0f, self.monthHeaderHeight, self.monthHeaderHeight)];
-            [headerView.prevMonthBtn addTarget:self action:@selector(prevMonth) forControlEvents:
+            [headerView.previousMonthBtn setFrame:CGRectMake(0.0f, 0.0f, self.monthHeaderHeight, self.monthHeaderHeight)];
+            [headerView.previousMonthBtn addTarget:self action:@selector(previousMonth) forControlEvents:
              UIControlEventTouchUpInside];
-            [headerView.prevMonthBtn setHidden:NO];
+            [headerView.previousMonthBtn setHidden:NO];
 
             [headerView.nextMonthBtn setFrame:CGRectMake(self.collectionView.bounds.size.width - self.monthHeaderHeight, 0.0f, self.monthHeaderHeight, self.monthHeaderHeight)];
             [headerView.nextMonthBtn addTarget:self action:@selector(nextMonth) forControlEvents:UIControlEventTouchUpInside];
@@ -203,8 +214,8 @@ static NSUInteger const daysInWeek = 7;
         }
         else
         {
-            [headerView.prevMonthBtn setHidden:YES];
-            [headerView.prevMonthBtn setHidden:YES];
+            [headerView.previousMonthBtn setHidden:YES];
+            [headerView.previousMonthBtn setHidden:YES];
         }
 
         NSArray *dow = @[@"SUN", @"MON", @"TUE", @"WED", @"THU", @"FRI", @"SAT"];
@@ -231,7 +242,7 @@ static NSUInteger const daysInWeek = 7;
     return CGSizeMake(320.0f, self.monthHeaderHeight + 20.0f);
 }
 
-- (void)prevMonth
+- (void)previousMonth
 {
     self.currentMonthOffset -= 1;
     [self.collectionView reloadData];
@@ -368,7 +379,6 @@ static NSUInteger const daysInWeek = 7;
 {
     if([[self.collectionView indexPathsForSelectedItems] count] == 1)
     {
-        NSLog(@"did start");
         self.selectedDate = [self dateForItemAtIndexPath:indexPath];
         if ([self.delegate respondsToSelector:@selector(SCDatePickerViewController:didSelectDate:)])
         {
@@ -377,14 +387,12 @@ static NSUInteger const daysInWeek = 7;
     }
     else if([[self.collectionView indexPathsForSelectedItems] count] == 2)
     {
-        NSLog(@"did end");
         self.selectedEndDate = [self dateForItemAtIndexPath:indexPath];
 
         NSArray *sortedIndexPathsForSelectedItems = [[self.collectionView indexPathsForSelectedItems] sortedArrayUsingComparator:^NSComparisonResult(id obj1, id obj2) {
             return [obj1 compare:obj2];
         }];
         
-        NSLog(@"sortedIndexPathsForSelectedItems-%@", sortedIndexPathsForSelectedItems);
         for(NSIndexPath *i in [self indexPathsBetween:[sortedIndexPathsForSelectedItems objectAtIndex:0] and:[sortedIndexPathsForSelectedItems objectAtIndex:1]])
         {
             if([self.collectionView cellForItemAtIndexPath:i] == nil) // not sure what to do.. may be check if date for cells month belongs to section
@@ -429,21 +437,18 @@ static NSUInteger const daysInWeek = 7;
     {
         if(self.rangeSelection == YES)
         {
-            NSLog(@"should start selection");
             self.collectionView.allowsMultipleSelection = YES;
         }
         return YES;
     }
     else if([[self.collectionView indexPathsForSelectedItems] count] == 1 && self.rangeSelection == YES)
     {
-        NSLog(@"should end selection");
         return YES;
     }
     else
     {
         if(self.rangeSelection == YES)
         {
-            NSLog(@"should reset selection");
             [self.collectionView reloadData];
             return NO;
         }

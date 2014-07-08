@@ -16,7 +16,7 @@
 
 @synthesize topLineView;
 @synthesize bottomLineView;
-@synthesize prevMonthBtn;
+@synthesize previousMonthBtn;
 @synthesize nextMonthBtn;
 @synthesize monthYearLabel;
 @synthesize daysOfWeekView;
@@ -31,12 +31,12 @@
         monthYearLabel.textAlignment = NSTextAlignmentCenter;
         [self addSubview:monthYearLabel];
         
-        prevMonthBtn = [[UIButton alloc] init];
-        [prevMonthBtn setTitle:@"<" forState:UIControlStateNormal];
-        [prevMonthBtn setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
-        [prevMonthBtn setTitleColor:[UIColor lightGrayColor] forState:UIControlStateDisabled];
-        prevMonthBtn.titleLabel.textAlignment = NSTextAlignmentCenter;
-        [self addSubview:prevMonthBtn];
+        previousMonthBtn = [[UIButton alloc] init];
+        [previousMonthBtn setTitle:@"<" forState:UIControlStateNormal];
+        [previousMonthBtn setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
+        [previousMonthBtn setTitleColor:[UIColor lightGrayColor] forState:UIControlStateDisabled];
+        previousMonthBtn.titleLabel.textAlignment = NSTextAlignmentCenter;
+        [self addSubview:previousMonthBtn];
 
         nextMonthBtn = [[UIButton alloc] init];
         [nextMonthBtn setTitle:@">" forState:UIControlStateNormal];

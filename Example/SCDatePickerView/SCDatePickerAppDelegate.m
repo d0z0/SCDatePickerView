@@ -2,7 +2,7 @@
 //  SCDatePickerAppDelegate.m
 //  SCDatePickerView
 //
-//  Created by CocoaPods on 07/04/2014.
+//  Created by Schubert Cardozo on 07/04/2014.
 //  Copyright (c) 2014 Schubert. All rights reserved.
 //
 
@@ -43,6 +43,9 @@
     // datePickerVC.dateColor = [UIColor blackColor];
     // datePickerVC.selectedDateColor = [UIColor redColor];
 
+    [datePickerVC nextMonth];
+    NSLog(@"currentMonth-%@", [datePickerVC currentMonthName]);
+    
     [self.window setRootViewController:navigation];
     [self.window makeKeyAndVisible];
     

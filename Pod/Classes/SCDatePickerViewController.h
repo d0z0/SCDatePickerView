@@ -37,6 +37,9 @@
 @property (nonatomic, strong) NSDateFormatter *monthYearFormatter;
 @property (nonatomic, assign) BOOL rangeSelection;
 
+- (void)previousMonth;
+- (void)nextMonth;
+- (NSString *)currentMonthName;
 
 @end
 
