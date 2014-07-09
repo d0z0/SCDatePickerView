@@ -15,8 +15,6 @@
 
 @interface SCDatePickerViewController ()
 
-// private properties
-// @property (nonatomic, strong, readwrite) NSMutableArray *selectedIndexPaths;
 
 @end
 
@@ -81,7 +79,7 @@ static NSUInteger const daysInWeek = 7;
 {
     self.calendar = [NSCalendar currentCalendar];
 
-    // rangeselection is only allowed with continouscalendar 
+    // rangeselection is only allowed with continouscalendar
     
     if(!self.monthHeaderHeight)
         self.monthHeaderHeight = 40.0f;
@@ -129,7 +127,7 @@ static NSUInteger const daysInWeek = 7;
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    //self.edgesForExtendedLayout = UIRectEdgeNone;
+    self.edgesForExtendedLayout = UIRectEdgeNone;
     [self.navigationController.navigationBar setBarStyle:UIBarStyleDefault];
     
     self.collectionView.allowsSelection = YES;
@@ -280,7 +278,7 @@ static NSUInteger const daysInWeek = 7;
         NSArray *dow = @[@"SUN", @"MON", @"TUE", @"WED", @"THU", @"FRI", @"SAT"];
         [headerView.daysOfWeekView setFrame:CGRectMake(0.0f, self.monthHeaderHeight, self.collectionView.bounds.size.width, 20.0f)];
         CGFloat dayWidth = self.collectionView.bounds.size.width / daysInWeek;
-        for(int i = 0; i < 7; i ++)
+        for(int i = 0; i < daysInWeek; i ++)
         {
             UILabel *dayLabel = [[headerView.daysOfWeekView subviews] objectAtIndex:i];
             [dayLabel setFrame:CGRectMake(i * dayWidth, 0.0f, dayWidth, 20.0f)];

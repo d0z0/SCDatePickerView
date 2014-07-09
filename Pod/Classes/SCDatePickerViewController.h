@@ -15,7 +15,6 @@
 @interface SCDatePickerViewController : UICollectionViewController<UICollectionViewDataSource, UICollectionViewDelegate,UICollectionViewDelegateFlowLayout>
 
 @property (nonatomic, strong) NSCalendar *calendar;
-// @property (nonatomic, strong, readonly) NSMutableArray *selectedIndexPaths;
 
 @property (nonatomic, weak) id<SCDatePickerViewDelegate> delegate;
 
