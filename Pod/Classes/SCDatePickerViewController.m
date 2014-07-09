@@ -590,11 +590,6 @@ static NSUInteger const daysInWeek = 7;
     return [[self.calendar dateFromComponents:firstComponents] compare:[self.calendar dateFromComponents:secondComponents]];
 }
 
-- (void)willRotateToInterfaceOrientation:(UIInterfaceOrientation)toInterfaceOrientation duration:(NSTimeInterval)duration
-{
-    //[self.collectionView.collectionViewLayout invalidateLayout];
-}
-
 - (void)didReceiveMemoryWarning
 {
     [super didReceiveMemoryWarning];

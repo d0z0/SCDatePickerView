@@ -24,8 +24,9 @@
     // -- Date range which the selection must be restricted to
     // datePickerVC.startDate = [NSDate date];
     // datePickerVC.endDate = [NSDate dateWithTimeInterval:((24 * 60 * 60) * 40) sinceDate:[NSDate date]];
-    datePickerVC.selectedDate = [NSDate date];
     
+    // -- Pre selected dates
+    datePickerVC.selectedDate = [NSDate date];
     NSDateComponents *comp = [[NSDateComponents alloc] init];
     datePickerVC.selectedDate = [[NSCalendar currentCalendar] dateByAddingComponents:comp toDate:[NSDate date] options:0];
     comp.month = 6;
