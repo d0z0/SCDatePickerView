@@ -32,14 +32,12 @@
         [self addSubview:monthYearLabel];
         
         previousMonthBtn = [[UIButton alloc] init];
-        [previousMonthBtn setTitle:@"<" forState:UIControlStateNormal];
         [previousMonthBtn setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
         [previousMonthBtn setTitleColor:[UIColor lightGrayColor] forState:UIControlStateDisabled];
         previousMonthBtn.titleLabel.textAlignment = NSTextAlignmentCenter;
         [self addSubview:previousMonthBtn];
 
         nextMonthBtn = [[UIButton alloc] init];
-        [nextMonthBtn setTitle:@">" forState:UIControlStateNormal];
         [nextMonthBtn setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
         [nextMonthBtn setTitleColor:[UIColor lightGrayColor] forState:UIControlStateDisabled];
         nextMonthBtn.titleLabel.textAlignment = NSTextAlignmentCenter;

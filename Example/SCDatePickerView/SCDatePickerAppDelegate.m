@@ -24,10 +24,15 @@
     // -- Date range which the selection must be restricted to
     // datePickerVC.startDate = [NSDate date];
     // datePickerVC.endDate = [NSDate dateWithTimeInterval:((24 * 60 * 60) * 40) sinceDate:[NSDate date]];
-
+    datePickerVC.selectedDate = [NSDate date];
     
-    // -- Continous calendar (show multiple at a time scrolling vertically)
-    // datePickerVC.continousCalendar = YES;
+    NSDateComponents *comp = [[NSDateComponents alloc] init];
+    datePickerVC.selectedDate = [[NSCalendar currentCalendar] dateByAddingComponents:comp toDate:[NSDate date] options:0];
+    comp.month = 6;
+    datePickerVC.selectedEndDate = [[NSCalendar currentCalendar] dateByAddingComponents:comp toDate:[NSDate date] options:0];
+    
+    // -- Continous calendar (show all months, scrolling vertically)
+    // datePickerVC.continousCalendar = NO;
     
     // -- Current month offset from startDate (only applies if continousCalendar is NO)
     // datePickerVC.currentMonthOffset = 0;
@@ -36,17 +41,26 @@
     // datePickerVC.rangeSelection = YES;
 
     // -- Appearance customization
-     datePickerVC.monthHeaderHeight = 40.0f;
+    // datePickerVC.monthHeaderHeight = 40.0f;
     // datePickerVC.headerFont = [UIFont fontWithName:@"HelveticaNeue-Bold" size:20.0f];
     // datePickerVC.dayOfWeekFont = [UIFont fontWithName:@"HelveticaNeue-Light" size:12.0f];
     // datePickerVC.dateFont = [UIFont fontWithName:@"HelveticaNeue-Light" size:18.0f];
     // datePickerVC.dateColor = [UIColor blackColor];
-    // datePickerVC.selectedDateColor = [UIColor redColor];
 
     [self.window setRootViewController:navigation];
     [self.window makeKeyAndVisible];
     
     return YES;
+}
+
+- (UIImage *)SCDatePickerViewController:(SCDatePickerViewController *)controller previousMonthImageForMonth:(int)monthOffset
+{
+    return [UIImage imageNamed:@"glyph-left-arrow.png"];
+}
+
+- (UIImage *)SCDatePickerViewController:(SCDatePickerViewController *)controller nextMonthImageForMonth:(int)monthOffset
+{
+    return [UIImage imageNamed:@"glyph-right-arrow.png"];
 }
 
 - (void)SCDatePickerViewController:(SCDatePickerViewController *)controller didSelectDate:(NSDate *)date

@@ -16,9 +16,7 @@
 @interface SCDatePickerViewController ()
 
 // private properties
-@property (nonatomic, strong, readwrite) NSDate *selectedDate;
-@property (nonatomic, strong, readwrite) NSDate *selectedEndDate;
-@property (nonatomic, strong, readwrite) NSMutableArray *selectedIndexPaths;
+// @property (nonatomic, strong, readwrite) NSMutableArray *selectedIndexPaths;
 
 @end
 
@@ -82,6 +80,8 @@ static NSUInteger const daysInWeek = 7;
 - (void)initData
 {
     self.calendar = [NSCalendar currentCalendar];
+
+    // rangeselection is only allowed with continouscalendar 
     
     if(!self.monthHeaderHeight)
         self.monthHeaderHeight = 40.0f;
@@ -97,13 +97,9 @@ static NSUInteger const daysInWeek = 7;
 
     if(!self.dateFont)
         self.dateFont = [UIFont fontWithName:@"HelveticaNeue-Light" size:18.0f];
-//        self.dateFont = [UIFont fontWithName:@"HelveticaNeue-Light" size:16.0f];
     
     if(!self.dateColor)
         self.dateColor = [UIColor blackColor];
-
-    if(!self.selectedDateColor)
-        self.selectedDateColor = [UIColor blackColor];
 
     self.dateFormatter.calendar = self.calendar;
     if(!self.dateFormatter)
@@ -144,6 +140,58 @@ static NSUInteger const daysInWeek = 7;
     [self.collectionView setBackgroundColor:[UIColor whiteColor]];
     [self.collectionView registerClass:[SCDatePickerViewCell class] forCellWithReuseIdentifier:kSCDatePickerViewCellIdentifier];
     [self.collectionView registerClass:[SCDatePickerViewHeader class] forSupplementaryViewOfKind:UICollectionElementKindSectionHeader withReuseIdentifier:SCDatePickerViewHeaderIdentifier];
+    if(self.rangeSelection == YES)
+    {
+        // range selection requires continousCalendar
+        self.continousCalendar = YES;
+        self.collectionView.allowsMultipleSelection = YES;
+    }
+}
+
+- (void)selectCellAtIndexPath:(NSIndexPath *)indexPath animated:(BOOL)animated scrollPosition:(int)scrollPosition
+{
+    
+    NSDateComponents *firstOfMonthComponents = [self.calendar components:NSMonthCalendarUnit fromDate:[self firstDateOfMonthForSection:indexPath.section]];
+    NSDateComponents *dateComponents = [self.calendar components:NSMonthCalendarUnit fromDate:[self dateForItemAtIndexPath:indexPath]];
+    if([firstOfMonthComponents month] == [dateComponents month])
+    {
+        UICollectionViewCell *cell = [self.collectionView cellForItemAtIndexPath:indexPath];
+        [cell setSelected:YES];
+        [self.collectionView selectItemAtIndexPath:indexPath animated:animated scrollPosition:scrollPosition];
+    }
+}
+
+- (void)viewDidAppear:(BOOL)animated
+{
+    [super viewDidAppear:animated];
+    [self preSelectDatesIfNeeded];
+}
+
+- (BOOL)isDateValid:(NSDate *)date
+{
+    return (date && [self compareDate:self.startDate withDate:date] != NSOrderedDescending && [self compareDate:date withDate:self.endDate] != NSOrderedDescending);
+}
+
+- (void)preSelectDatesIfNeeded
+{
+    if([self isDateValid:self.selectedDate])
+    {
+        if(self.rangeSelection && [self isDateValid:self.selectedEndDate])
+        {
+            NSArray *indexPaths = [self indexPathsBetween:[self indexPathForDate:self.selectedDate] and:[self indexPathForDate:self.selectedEndDate]];
+            for(int i = 0; i < [indexPaths count]; i ++)
+            {
+                [self selectCellAtIndexPath:[indexPaths objectAtIndex:i] animated:NO scrollPosition:(i == 0 ? UICollectionViewScrollPositionCenteredVertically : UICollectionViewScrollPositionNone)];
+            }
+        }
+        else
+        {
+            NSIndexPath *indexPath = [self indexPathForDate:self.selectedDate];
+            [self selectCellAtIndexPath:indexPath animated:NO scrollPosition:UICollectionViewScrollPositionCenteredVertically];
+        }
+
+    }
+    
 }
 
 - (UICollectionReusableView *)collectionView:(UICollectionView *)collectionView viewForSupplementaryElementOfKind:(NSString *)kind atIndexPath:(NSIndexPath *)indexPath
@@ -163,6 +211,29 @@ static NSUInteger const daysInWeek = 7;
         
         headerView.previousMonthBtn.titleLabel.font = self.headerFont;
         headerView.nextMonthBtn.titleLabel.font = self.headerFont;
+        
+        // previous month button
+        if ([self.delegate respondsToSelector:@selector(SCDatePickerViewController:previousMonthImageForMonth:)])
+        {
+            [headerView.previousMonthBtn setImage:[self.delegate SCDatePickerViewController:self previousMonthImageForMonth:self.currentMonthOffset] forState:UIControlStateNormal];
+            headerView.previousMonthBtn.titleLabel.text = nil;
+        }
+        else
+        {
+            [headerView.previousMonthBtn setTitle:@"<" forState:UIControlStateNormal];
+        }
+
+        // next month button
+        if ([self.delegate respondsToSelector:@selector(SCDatePickerViewController:nextMonthImageForMonth:)])
+        {
+            [headerView.nextMonthBtn setImage:[self.delegate SCDatePickerViewController:self nextMonthImageForMonth:self.currentMonthOffset] forState:UIControlStateNormal];
+            headerView.nextMonthBtn.titleLabel.text = nil;
+        }
+        else
+        {
+            [headerView.nextMonthBtn setTitle:@">" forState:UIControlStateNormal];
+        }
+
 
         NSDateComponents *offset = [[NSDateComponents alloc] init];
         offset.day = -1;
@@ -191,12 +262,12 @@ static NSUInteger const daysInWeek = 7;
 
         if(!self.continousCalendar)
         {
-            [headerView.previousMonthBtn setFrame:CGRectMake(0.0f, 0.0f, self.monthHeaderHeight, self.monthHeaderHeight)];
+            [headerView.previousMonthBtn setFrame:CGRectMake(5.0f, 5.0f, self.monthHeaderHeight - 10.0f, self.monthHeaderHeight - 10.0f)];
             [headerView.previousMonthBtn addTarget:self action:@selector(previousMonth) forControlEvents:
              UIControlEventTouchUpInside];
             [headerView.previousMonthBtn setHidden:NO];
 
-            [headerView.nextMonthBtn setFrame:CGRectMake(self.collectionView.bounds.size.width - self.monthHeaderHeight, 0.0f, self.monthHeaderHeight, self.monthHeaderHeight)];
+            [headerView.nextMonthBtn setFrame:CGRectMake(self.collectionView.bounds.size.width - self.monthHeaderHeight + 5.0f, 5.0f, self.monthHeaderHeight - 10.0f, self.monthHeaderHeight - 10.0f)];
             [headerView.nextMonthBtn addTarget:self action:@selector(nextMonth) forControlEvents:UIControlEventTouchUpInside];
             [headerView.nextMonthBtn setHidden:NO];
         }
@@ -320,8 +391,14 @@ static NSUInteger const daysInWeek = 7;
         cellOffset.month = indexPath.section;
     
     NSUInteger weekOffset = [self.calendar ordinalityOfUnit:NSDayCalendarUnit inUnit:NSWeekCalendarUnit forDate:[self firstDateOfMonthForSection:cellOffset.month]];
-    cellOffset.day = indexPath.item + ((weekOffset - 1) * -1);
+    cellOffset.day = indexPath.item + (-(weekOffset - 1));
     return [self.calendar dateByAddingComponents:cellOffset toDate:[self firstOfStartDate] options:0];
+}
+
+- (NSIndexPath *)indexPathForDate:(NSDate *)date
+{
+    NSDateComponents *difference = [self.calendar components:NSMonthCalendarUnit|NSDayCalendarUnit fromDate:[self firstOfStartDate] toDate:date options:0];
+    return [NSIndexPath indexPathForItem:difference.day+3 inSection:difference.month];
 }
 
 - (NSArray *)indexPathsBetween:(NSIndexPath *)fromIndexPath and:(NSIndexPath *)toIndexPath
@@ -332,13 +409,17 @@ static NSUInteger const daysInWeek = 7;
         NSUInteger s = [fromIndexPath section];
         for(NSUInteger i = [fromIndexPath row]; i <= [toIndexPath row] ; i ++)
         {
-            [indexPaths addObject:[NSIndexPath indexPathForItem:i inSection:s]];
+            if(s < [self.collectionView numberOfSections])
+                [indexPaths addObject:[NSIndexPath indexPathForItem:i inSection:s]];
         }
     }
     else
     {
         for(NSUInteger s = [fromIndexPath section]; s <= [toIndexPath section]; s ++)
         {
+            if(s >= [self.collectionView numberOfSections])
+                break;
+
             NSUInteger rmin;
             NSUInteger rmax;
             if(s == [fromIndexPath section])
@@ -378,22 +459,13 @@ static NSUInteger const daysInWeek = 7;
     else if([[self.collectionView indexPathsForSelectedItems] count] == 2)
     {
         self.selectedEndDate = [self dateForItemAtIndexPath:indexPath];
-
         NSArray *sortedIndexPathsForSelectedItems = [[self.collectionView indexPathsForSelectedItems] sortedArrayUsingComparator:^NSComparisonResult(id obj1, id obj2) {
             return [obj1 compare:obj2];
         }];
         
         for(NSIndexPath *i in [self indexPathsBetween:[sortedIndexPathsForSelectedItems objectAtIndex:0] and:[sortedIndexPathsForSelectedItems objectAtIndex:1]])
         {
-            if([self.collectionView cellForItemAtIndexPath:i] == nil) // not sure what to do.. may be check if date for cells month belongs to section
-            {
-                NSDateComponents *firstOfMonthComponents = [self.calendar components:NSMonthCalendarUnit fromDate:[self firstDateOfMonthForSection:i.section]];
-                NSDateComponents *dateComponents = [self.calendar components:NSMonthCalendarUnit fromDate:[self dateForItemAtIndexPath:i]];
-                if([firstOfMonthComponents month] == [dateComponents month])
-                    [self.collectionView selectItemAtIndexPath:i animated:NO scrollPosition:UICollectionViewScrollPositionNone];
-            }
-            else if([self.collectionView cellForItemAtIndexPath:i].tag != 0)
-                [self.collectionView selectItemAtIndexPath:i animated:NO scrollPosition:UICollectionViewScrollPositionNone];
+            [self selectCellAtIndexPath:i animated:NO scrollPosition:UICollectionViewScrollPositionNone];
         }
         
         if ([self.delegate respondsToSelector:@selector(SCDatePickerViewController:didSelectDateRangeFrom:to:)])
@@ -416,6 +488,10 @@ static NSUInteger const daysInWeek = 7;
 
 - (BOOL)collectionView:(UICollectionView *)collectionView shouldSelectItemAtIndexPath:(NSIndexPath *)indexPath
 {
+    for(NSIndexPath *i in [self.collectionView indexPathsForSelectedItems])
+    {
+        [self.collectionView cellForItemAtIndexPath:i].selected = NO;
+    }
     
     if([self.collectionView cellForItemAtIndexPath:indexPath].tag == 0)
     {
@@ -458,11 +534,6 @@ static NSUInteger const daysInWeek = 7;
     cell.dateLabel.text = [self.dateFormatter stringFromDate:cellDate];
     cell.dateLabel.font = self.dateFont;
     
-    if(cell.selected)
-        cell.dateLabel.textColor = self.selectedDateColor;
-    else
-        cell.dateLabel.textColor = self.dateColor;
-
     if ([self.delegate respondsToSelector:@selector(SCDatePickerViewController:selectedBackgroundViewForDate:)])
     {
         cell.selectedBackgroundView = [self.delegate SCDatePickerViewController:self selectedBackgroundViewForDate:cellDate];
@@ -471,9 +542,6 @@ static NSUInteger const daysInWeek = 7;
     {
         UIView *selectedBackgroundView = [[UIView alloc] initWithFrame:cell.contentView.frame];
         selectedBackgroundView.backgroundColor = [UIColor lightGrayColor];
-        //selectedBackgroundView.layer.cornerRadius = cell.contentView.frame.size.width/2;
-//        selectedBackgroundView.layer.borderColor = [UIColor grayColor].CGColor;
-//        selectedBackgroundView.layer.borderWidth = 1.0f;
         cell.selectedBackgroundView = selectedBackgroundView;
     }
 
@@ -498,8 +566,6 @@ static NSUInteger const daysInWeek = 7;
         {
             cell.todayBackgroundView.hidden = YES;
         }
-        
-
     }
     else
     {
