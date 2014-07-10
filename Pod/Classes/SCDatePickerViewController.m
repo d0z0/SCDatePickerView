@@ -139,7 +139,6 @@ static NSUInteger const daysInWeek = 7;
     [self initData];
 
     self.edgesForExtendedLayout = UIRectEdgeNone;
-    [self.navigationController.navigationBar setBarStyle:UIBarStyleDefault];
     
     self.collectionView.allowsSelection = YES;
     self.collectionView.delegate = self;
