@@ -35,7 +35,7 @@
     // datePickerVC.currentMonthOffset = 0;
 
     // -- Allows a range of dates to be selected (only works accross months if continousCalendar is YES)
-    datePickerVC.rangeSelection = YES;
+    // datePickerVC.rangeSelection = YES;
 
     // -- Appearance customization
     // datePickerVC.monthHeaderHeight = 40.0f;

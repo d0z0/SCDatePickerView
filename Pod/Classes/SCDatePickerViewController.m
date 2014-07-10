@@ -220,11 +220,12 @@ static NSUInteger const daysInWeek = 7;
         headerView.previousMonthBtn.titleLabel.font = self.headerFont;
         headerView.nextMonthBtn.titleLabel.font = self.headerFont;
         
+
         // previous month button
         if ([self.delegate respondsToSelector:@selector(SCDatePickerViewController:previousMonthImageForMonth:)])
         {
-            [headerView.previousMonthBtn setImage:[self.delegate SCDatePickerViewController:self previousMonthImageForMonth:self.currentMonthOffset] forState:UIControlStateNormal];
-            headerView.previousMonthBtn.titleLabel.text = nil;
+            [headerView.previousMonthImage setImage:[self.delegate SCDatePickerViewController:self previousMonthImageForMonth:self.currentMonthOffset]];
+            [headerView.previousMonthBtn setTitle:@"" forState:UIControlStateNormal];
         }
         else
         {
@@ -234,8 +235,8 @@ static NSUInteger const daysInWeek = 7;
         // next month button
         if ([self.delegate respondsToSelector:@selector(SCDatePickerViewController:nextMonthImageForMonth:)])
         {
-            [headerView.nextMonthBtn setImage:[self.delegate SCDatePickerViewController:self nextMonthImageForMonth:self.currentMonthOffset] forState:UIControlStateNormal];
-            headerView.nextMonthBtn.titleLabel.text = nil;
+            [headerView.nextMonthImage setImage:[self.delegate SCDatePickerViewController:self nextMonthImageForMonth:self.currentMonthOffset]];
+            [headerView.nextMonthBtn setTitle:@"" forState:UIControlStateNormal];
         }
         else
         {
@@ -253,29 +254,37 @@ static NSUInteger const daysInWeek = 7;
         if([self compareDate:self.startDate withDate:lastDateOfPrevMonth] == NSOrderedDescending)
         {
             [headerView.previousMonthBtn setEnabled:NO];
+            [headerView.previousMonthImage setAlpha:0.25f];
         }
         else
         {
             [headerView.previousMonthBtn setEnabled:YES];
+            [headerView.previousMonthImage setAlpha:1.0f];
+
         }
         
         if([self compareDate:self.endDate withDate:firstDateOfNextMonth] == NSOrderedAscending)
         {
             [headerView.nextMonthBtn setEnabled:NO];
+            [headerView.nextMonthImage setAlpha:0.25f];
         }
         else
         {
             [headerView.nextMonthBtn setEnabled:YES];
+            [headerView.nextMonthImage setAlpha:1.0f];
+
         }
         
         if(!self.continousCalendar)
         {
-            [headerView.previousMonthBtn setFrame:CGRectMake(5.0f, 5.0f, self.monthHeaderHeight - 10.0f, self.monthHeaderHeight - 10.0f)];
+            [headerView.previousMonthImage setFrame:CGRectMake(5.0f, 5.0f, self.monthHeaderHeight - 10.0f, self.monthHeaderHeight - 10.0f)];
+            [headerView.previousMonthBtn setFrame:headerView.previousMonthImage.frame];
             [headerView.previousMonthBtn addTarget:self action:@selector(previousMonth) forControlEvents:
              UIControlEventTouchUpInside];
             [headerView.previousMonthBtn setHidden:NO];
             
-            [headerView.nextMonthBtn setFrame:CGRectMake(self.collectionView.bounds.size.width - self.monthHeaderHeight + 5.0f, 5.0f, self.monthHeaderHeight - 10.0f, self.monthHeaderHeight - 10.0f)];
+            [headerView.nextMonthImage setFrame:CGRectMake(self.collectionView.bounds.size.width - self.monthHeaderHeight + 5.0f, 5.0f, self.monthHeaderHeight - 10.0f, self.monthHeaderHeight - 10.0f)];
+            [headerView.nextMonthBtn setFrame:headerView.nextMonthImage.frame];
             [headerView.nextMonthBtn addTarget:self action:@selector(nextMonth) forControlEvents:UIControlEventTouchUpInside];
             [headerView.nextMonthBtn setHidden:NO];
         }

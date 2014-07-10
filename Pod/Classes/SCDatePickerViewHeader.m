@@ -18,6 +18,8 @@
 @synthesize bottomLineView;
 @synthesize previousMonthBtn;
 @synthesize nextMonthBtn;
+@synthesize previousMonthImage;
+@synthesize nextMonthImage;
 @synthesize monthYearLabel;
 @synthesize daysOfWeekView;
 
@@ -31,11 +33,22 @@
         monthYearLabel.textAlignment = NSTextAlignmentCenter;
         [self addSubview:monthYearLabel];
         
+        // previous image
+        previousMonthImage = [[UIImageView alloc] init];
+        previousMonthImage.contentMode = UIViewContentModeScaleAspectFit;
+        [self addSubview:previousMonthImage];
+        
+        // previous button
         previousMonthBtn = [[UIButton alloc] init];
         [previousMonthBtn setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
         [previousMonthBtn setTitleColor:[UIColor lightGrayColor] forState:UIControlStateDisabled];
         previousMonthBtn.titleLabel.textAlignment = NSTextAlignmentCenter;
         [self addSubview:previousMonthBtn];
+
+        // previous image
+        nextMonthImage = [[UIImageView alloc] init];
+        nextMonthImage.contentMode = UIViewContentModeScaleAspectFit;
+        [self addSubview:nextMonthImage];
 
         nextMonthBtn = [[UIButton alloc] init];
         [nextMonthBtn setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];

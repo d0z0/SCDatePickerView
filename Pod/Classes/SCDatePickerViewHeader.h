@@ -16,6 +16,8 @@
 @property (nonatomic, strong) UILabel *monthYearLabel;
 @property (nonatomic, strong) UIButton *previousMonthBtn;
 @property (nonatomic, strong) UIButton *nextMonthBtn;
+@property (nonatomic, strong) UIImageView *previousMonthImage;
+@property (nonatomic, strong) UIImageView *nextMonthImage;
 @property (nonatomic, strong) UIView *daysOfWeekView;
 
 @end
