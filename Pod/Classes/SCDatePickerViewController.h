@@ -8,8 +8,6 @@
 
 #import <UIKit/UIKit.h>
 
-#define iPadDevice (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad)
-
 @protocol SCDatePickerViewDelegate;
 
 @interface SCDatePickerViewController : UICollectionViewController<UICollectionViewDataSource, UICollectionViewDelegate,UICollectionViewDelegateFlowLayout>

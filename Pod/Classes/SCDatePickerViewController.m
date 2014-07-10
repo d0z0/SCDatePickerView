@@ -25,6 +25,7 @@ static NSUInteger const daysInWeek = 7;
 @synthesize calendar;
 @synthesize startDate;
 @synthesize endDate;
+@synthesize selectedDate;
 
 - (id)init
 {
@@ -69,7 +70,6 @@ static NSUInteger const daysInWeek = 7;
 {
     self = [super initWithCollectionViewLayout:layout];
     if (self) {
-        [self initData];
     }
     
     return self;
@@ -78,7 +78,7 @@ static NSUInteger const daysInWeek = 7;
 - (void)initData
 {
     self.calendar = [NSCalendar currentCalendar];
-
+    
     // rangeselection is only allowed with continouscalendar
     
     if(!self.monthHeaderHeight)
@@ -89,16 +89,16 @@ static NSUInteger const daysInWeek = 7;
     
     if(!self.headerFont)
         self.headerFont = [UIFont fontWithName:@"HelveticaNeue-Bold" size:16.0f];
-
+    
     if(!self.dayOfWeekFont)
         self.dayOfWeekFont = [UIFont fontWithName:@"HelveticaNeue" size:10.0f];
-
+    
     if(!self.dateFont)
         self.dateFont = [UIFont fontWithName:@"HelveticaNeue-Light" size:18.0f];
     
     if(!self.dateColor)
         self.dateColor = [UIColor blackColor];
-
+    
     self.dateFormatter.calendar = self.calendar;
     if(!self.dateFormatter)
     {
@@ -112,21 +112,32 @@ static NSUInteger const daysInWeek = 7;
         self.monthYearFormatter.calendar = self.calendar;
         self.monthYearFormatter.dateFormat = [NSDateFormatter dateFormatFromTemplate:@"yyyyLLLL" options:0 locale:self.calendar.locale];
     }
-
+    
     NSDateComponents *offsetComponents = [[NSDateComponents alloc] init];
     offsetComponents.day = 0;
     if(!self.startDate)
         self.startDate = [self.calendar dateByAddingComponents:offsetComponents toDate:[NSDate date] options:0];
+    
     offsetComponents.day = -1;
     offsetComponents.year = 1;
     
     if(!self.endDate)
         self.endDate = [self.calendar dateByAddingComponents:offsetComponents toDate:[NSDate date] options:0];
+    
+    
+}
+
+- (NSDate *)stripTimeFromDate:(NSDate *)date
+{
+    return [self.calendar dateFromComponents:[self.calendar components:NSYearCalendarUnit|NSMonthCalendarUnit|NSDayCalendarUnit fromDate:date]];
 }
 
 - (void)viewDidLoad
 {
     [super viewDidLoad];
+    
+    [self initData];
+
     self.edgesForExtendedLayout = UIRectEdgeNone;
     [self.navigationController.navigationBar setBarStyle:UIBarStyleDefault];
     
@@ -187,7 +198,7 @@ static NSUInteger const daysInWeek = 7;
             NSIndexPath *indexPath = [self indexPathForDate:self.selectedDate];
             [self selectCellAtIndexPath:indexPath animated:NO scrollPosition:UICollectionViewScrollPositionCenteredVertically];
         }
-
+        
     }
     
 }
@@ -199,12 +210,12 @@ static NSUInteger const daysInWeek = 7;
         
         [headerView.topLineView setFrame:CGRectMake(0.0f, 0.0f, self.collectionView.bounds.size.width, 1.0f)];
         [headerView.bottomLineView setFrame:CGRectMake(0.0f, self.monthHeaderHeight - 1.0f, self.collectionView.bounds.size.width, 1.0f)];
-
+        
         NSDate *firstDateOfMonth = [self firstDateOfMonthForSection:indexPath.section];
-
+        
         [headerView.monthYearLabel setFrame:CGRectMake(self.monthHeaderHeight, 0.0f, self.collectionView.bounds.size.width - (self.monthHeaderHeight * 2), self.monthHeaderHeight)];
         headerView.monthYearLabel.text = [self.monthYearFormatter stringFromDate:firstDateOfMonth];
-
+        
         headerView.monthYearLabel.font = self.headerFont;
         
         headerView.previousMonthBtn.titleLabel.font = self.headerFont;
@@ -220,7 +231,7 @@ static NSUInteger const daysInWeek = 7;
         {
             [headerView.previousMonthBtn setTitle:@"<" forState:UIControlStateNormal];
         }
-
+        
         // next month button
         if ([self.delegate respondsToSelector:@selector(SCDatePickerViewController:nextMonthImageForMonth:)])
         {
@@ -231,15 +242,15 @@ static NSUInteger const daysInWeek = 7;
         {
             [headerView.nextMonthBtn setTitle:@">" forState:UIControlStateNormal];
         }
-
-
+        
+        
         NSDateComponents *offset = [[NSDateComponents alloc] init];
         offset.day = -1;
         NSDate *lastDateOfPrevMonth = [self.calendar dateByAddingComponents:offset toDate:firstDateOfMonth options:0];
         offset.day = 0;
         offset.month = 1;
         NSDate *firstDateOfNextMonth = [self.calendar dateByAddingComponents:offset toDate:firstDateOfMonth options:0];
-
+        
         if([self compareDate:self.startDate withDate:lastDateOfPrevMonth] == NSOrderedDescending)
         {
             [headerView.previousMonthBtn setEnabled:NO];
@@ -248,7 +259,7 @@ static NSUInteger const daysInWeek = 7;
         {
             [headerView.previousMonthBtn setEnabled:YES];
         }
-
+        
         if([self compareDate:self.endDate withDate:firstDateOfNextMonth] == NSOrderedAscending)
         {
             [headerView.nextMonthBtn setEnabled:NO];
@@ -257,14 +268,14 @@ static NSUInteger const daysInWeek = 7;
         {
             [headerView.nextMonthBtn setEnabled:YES];
         }
-
+        
         if(!self.continousCalendar)
         {
             [headerView.previousMonthBtn setFrame:CGRectMake(5.0f, 5.0f, self.monthHeaderHeight - 10.0f, self.monthHeaderHeight - 10.0f)];
             [headerView.previousMonthBtn addTarget:self action:@selector(previousMonth) forControlEvents:
              UIControlEventTouchUpInside];
             [headerView.previousMonthBtn setHidden:NO];
-
+            
             [headerView.nextMonthBtn setFrame:CGRectMake(self.collectionView.bounds.size.width - self.monthHeaderHeight + 5.0f, 5.0f, self.monthHeaderHeight - 10.0f, self.monthHeaderHeight - 10.0f)];
             [headerView.nextMonthBtn addTarget:self action:@selector(nextMonth) forControlEvents:UIControlEventTouchUpInside];
             [headerView.nextMonthBtn setHidden:NO];
@@ -274,7 +285,7 @@ static NSUInteger const daysInWeek = 7;
             [headerView.previousMonthBtn setHidden:YES];
             [headerView.previousMonthBtn setHidden:YES];
         }
-
+        
         NSArray *dow = @[@"SUN", @"MON", @"TUE", @"WED", @"THU", @"FRI", @"SAT"];
         [headerView.daysOfWeekView setFrame:CGRectMake(0.0f, self.monthHeaderHeight, self.collectionView.bounds.size.width, 20.0f)];
         CGFloat dayWidth = self.collectionView.bounds.size.width / daysInWeek;
@@ -285,7 +296,7 @@ static NSUInteger const daysInWeek = 7;
             dayLabel.text = [dow objectAtIndex:i];
             dayLabel.font = self.dayOfWeekFont;
         }
-
+        
         return headerView;
         
     }
@@ -395,8 +406,12 @@ static NSUInteger const daysInWeek = 7;
 
 - (NSIndexPath *)indexPathForDate:(NSDate *)date
 {
-    NSDateComponents *difference = [self.calendar components:NSMonthCalendarUnit|NSDayCalendarUnit fromDate:[self firstOfStartDate] toDate:date options:0];
-    return [NSIndexPath indexPathForItem:difference.day+3 inSection:difference.month];
+    
+    int section = [self.calendar components:NSMonthCalendarUnit fromDate:[self startDateMonth] toDate:date options:0].month;
+    NSDate *firstDateInSection = [self dateForItemAtIndexPath:[NSIndexPath indexPathForItem:0 inSection:section]];
+    NSDateComponents *difference = [self.calendar components:NSDayCalendarUnit fromDate:firstDateInSection toDate:date options:0];
+    NSLog(@"difference from %@ to %@ -> %@", firstDateInSection, date, difference);
+    return [NSIndexPath indexPathForItem:difference.day inSection:section];
 }
 
 - (NSArray *)indexPathsBetween:(NSIndexPath *)fromIndexPath and:(NSIndexPath *)toIndexPath
@@ -417,7 +432,7 @@ static NSUInteger const daysInWeek = 7;
         {
             if(s >= [self.collectionView numberOfSections])
                 break;
-
+            
             NSUInteger rmin;
             NSUInteger rmax;
             if(s == [fromIndexPath section])
@@ -527,7 +542,7 @@ static NSUInteger const daysInWeek = 7;
 {
     SCDatePickerViewCell *cell = [self.collectionView dequeueReusableCellWithReuseIdentifier:kSCDatePickerViewCellIdentifier forIndexPath:indexPath];
     NSDate *cellDate = [self dateForItemAtIndexPath:indexPath];
-
+    
     NSDateComponents *cellDateComponents = [self.calendar components:NSCalendarUnitDay | NSCalendarUnitMonth | NSCalendarUnitYear fromDate:cellDate];
     cell.dateLabel.text = [self.dateFormatter stringFromDate:cellDate];
     cell.dateLabel.font = self.dateFont;
@@ -542,9 +557,9 @@ static NSUInteger const daysInWeek = 7;
         selectedBackgroundView.backgroundColor = [UIColor lightGrayColor];
         cell.selectedBackgroundView = selectedBackgroundView;
     }
-
+    
     NSDateComponents *firstOfMonthComponents = [self.calendar components:NSMonthCalendarUnit fromDate:[self firstDateOfMonthForSection:indexPath.section]];
-
+    
     if(cellDateComponents.month == firstOfMonthComponents.month && ([self compareDate:cellDate withDate:self.startDate] != NSOrderedAscending && [self compareDate:cellDate withDate:self.endDate] != NSOrderedDescending))
     {
         // enabled cells
@@ -572,8 +587,6 @@ static NSUInteger const daysInWeek = 7;
         cell.dateLabel.textColor = [UIColor lightGrayColor];
     }
     
-    
-    
     cell.layer.shouldRasterize = YES;
     cell.layer.rasterizationScale = [UIScreen mainScreen].scale;
     
@@ -595,15 +608,15 @@ static NSUInteger const daysInWeek = 7;
 }
 
 /*
-#pragma mark - Navigation
-
-// In a storyboard-based application, you will often want to do a little preparation before navigation
-- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
-{
-    // Get the new view controller using [segue destinationViewController].
-    // Pass the selected object to the new view controller.
-}
-*/
+ #pragma mark - Navigation
+ 
+ // In a storyboard-based application, you will often want to do a little preparation before navigation
+ - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
+ {
+ // Get the new view controller using [segue destinationViewController].
+ // Pass the selected object to the new view controller.
+ }
+ */
 
 
 @end

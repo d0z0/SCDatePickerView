@@ -22,15 +22,11 @@
     UINavigationController *navigation = [[UINavigationController alloc] initWithRootViewController:datePickerVC];
 
     // -- Date range which the selection must be restricted to
-    // datePickerVC.startDate = [NSDate date];
-    // datePickerVC.endDate = [NSDate dateWithTimeInterval:((24 * 60 * 60) * 40) sinceDate:[NSDate date]];
+    datePickerVC.startDate = [NSDate date];
+    datePickerVC.endDate = [NSDate dateWithTimeInterval:((24 * 60 * 60) * 152) sinceDate:[NSDate date]];
     
     // -- Pre selected dates
     datePickerVC.selectedDate = [NSDate date];
-    NSDateComponents *comp = [[NSDateComponents alloc] init];
-    datePickerVC.selectedDate = [[NSCalendar currentCalendar] dateByAddingComponents:comp toDate:[NSDate date] options:0];
-    comp.month = 6;
-    datePickerVC.selectedEndDate = [[NSCalendar currentCalendar] dateByAddingComponents:comp toDate:[NSDate date] options:0];
     
     // -- Continous calendar (show all months, scrolling vertically)
     // datePickerVC.continousCalendar = NO;
@@ -39,7 +35,7 @@
     // datePickerVC.currentMonthOffset = 0;
 
     // -- Allows a range of dates to be selected (only works accross months if continousCalendar is YES)
-    // datePickerVC.rangeSelection = YES;
+    datePickerVC.rangeSelection = YES;
 
     // -- Appearance customization
     // datePickerVC.monthHeaderHeight = 40.0f;
