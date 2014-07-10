@@ -137,7 +137,7 @@ static NSUInteger const daysInWeek = 7;
     [super viewDidLoad];
     
     [self initData];
-
+    
     self.edgesForExtendedLayout = UIRectEdgeNone;
     
     self.collectionView.allowsSelection = YES;
@@ -220,11 +220,12 @@ static NSUInteger const daysInWeek = 7;
         headerView.previousMonthBtn.titleLabel.font = self.headerFont;
         headerView.nextMonthBtn.titleLabel.font = self.headerFont;
         
-
+        
         // previous month button
         if ([self.delegate respondsToSelector:@selector(SCDatePickerViewController:previousMonthImageForMonth:)])
         {
             [headerView.previousMonthImage setImage:[self.delegate SCDatePickerViewController:self previousMonthImageForMonth:self.currentMonthOffset]];
+            [headerView.previousMonthImage setContentMode:UIViewContentModeScaleAspectFit];
             [headerView.previousMonthBtn setTitle:@"" forState:UIControlStateNormal];
         }
         else
@@ -236,6 +237,7 @@ static NSUInteger const daysInWeek = 7;
         if ([self.delegate respondsToSelector:@selector(SCDatePickerViewController:nextMonthImageForMonth:)])
         {
             [headerView.nextMonthImage setImage:[self.delegate SCDatePickerViewController:self nextMonthImageForMonth:self.currentMonthOffset]];
+            [headerView.nextMonthImage setContentMode:UIViewContentModeScaleAspectFit];
             [headerView.nextMonthBtn setTitle:@"" forState:UIControlStateNormal];
         }
         else
@@ -260,7 +262,7 @@ static NSUInteger const daysInWeek = 7;
         {
             [headerView.previousMonthBtn setEnabled:YES];
             [headerView.previousMonthImage setAlpha:1.0f];
-
+            
         }
         
         if([self compareDate:self.endDate withDate:firstDateOfNextMonth] == NSOrderedAscending)
@@ -272,7 +274,7 @@ static NSUInteger const daysInWeek = 7;
         {
             [headerView.nextMonthBtn setEnabled:YES];
             [headerView.nextMonthImage setAlpha:1.0f];
-
+            
         }
         
         if(!self.continousCalendar)

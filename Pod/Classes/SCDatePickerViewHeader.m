@@ -35,7 +35,6 @@
         
         // previous image
         previousMonthImage = [[UIImageView alloc] init];
-        previousMonthImage.contentMode = UIViewContentModeScaleAspectFit;
         [self addSubview:previousMonthImage];
         
         // previous button
@@ -44,18 +43,17 @@
         [previousMonthBtn setTitleColor:[UIColor lightGrayColor] forState:UIControlStateDisabled];
         previousMonthBtn.titleLabel.textAlignment = NSTextAlignmentCenter;
         [self addSubview:previousMonthBtn];
-
+        
         // previous image
         nextMonthImage = [[UIImageView alloc] init];
-        nextMonthImage.contentMode = UIViewContentModeScaleAspectFit;
         [self addSubview:nextMonthImage];
-
+        
         nextMonthBtn = [[UIButton alloc] init];
         [nextMonthBtn setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
         [nextMonthBtn setTitleColor:[UIColor lightGrayColor] forState:UIControlStateDisabled];
         nextMonthBtn.titleLabel.textAlignment = NSTextAlignmentCenter;
         [self addSubview:nextMonthBtn];
-
+        
         daysOfWeekView = [[UIView alloc] init];
         for(int i = 0; i < 7; i ++)
         {
@@ -64,7 +62,7 @@
             [daysOfWeekView addSubview:dayLabel];
         }
         [self addSubview:daysOfWeekView];
-
+        
         topLineView = [[UIView alloc] init];
         [topLineView setBackgroundColor:[UIColor lightGrayColor]];
         [self addSubview:topLineView];
@@ -80,12 +78,12 @@
 
 
 /*
-// Only override drawRect: if you perform custom drawing.
-// An empty implementation adversely affects performance during animation.
-- (void)drawRect:(CGRect)rect
-{
-    // Drawing code
-}
-*/
+ // Only override drawRect: if you perform custom drawing.
+ // An empty implementation adversely affects performance during animation.
+ - (void)drawRect:(CGRect)rect
+ {
+ // Drawing code
+ }
+ */
 
 @end
