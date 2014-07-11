@@ -32,6 +32,9 @@
 @property (nonatomic, strong) NSDateFormatter *monthYearFormatter;
 @property (nonatomic, assign) BOOL rangeSelection;
 
+- (void)selectDate:(NSDate *)date;
+- (void)selectDateRangefromDate:(NSDate *)fromDate toDate:(NSDate *)toDate;
+
 @end
 
 @protocol SCDatePickerViewDelegate <NSObject>

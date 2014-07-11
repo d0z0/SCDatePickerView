@@ -132,6 +132,14 @@ static NSUInteger const daysInWeek = 7;
     return [self.calendar dateFromComponents:[self.calendar components:NSYearCalendarUnit|NSMonthCalendarUnit|NSDayCalendarUnit fromDate:date]];
 }
 
+- (void)viewDidAppear:(BOOL)animated
+{
+    if(self.selectedDate)
+        [self selectDate:self.selectedDate];
+    else if(self.selectedDate && self.selectedEndDate)
+        [self selectDateRangefromDate:self.selectedDate toDate:self.selectedEndDate];
+}
+
 - (void)viewDidLoad
 {
     [super viewDidLoad];
@@ -169,37 +177,34 @@ static NSUInteger const daysInWeek = 7;
     }
 }
 
-- (void)viewDidAppear:(BOOL)animated
-{
-    [super viewDidAppear:animated];
-    [self preSelectDatesIfNeeded];
-}
-
-- (BOOL)isDateValid:(NSDate *)date
+- (BOOL)isDateWithinCalendarBounds:(NSDate *)date
 {
     return (date && [self compareDate:self.startDate withDate:date] != NSOrderedDescending && [self compareDate:date withDate:self.endDate] != NSOrderedDescending);
 }
 
-- (void)preSelectDatesIfNeeded
+- (void)selectDateRangefromDate:(NSDate *)fromDate toDate:(NSDate *)toDate
 {
-    if([self isDateValid:self.selectedDate])
+    [self selectDate:fromDate];
+    if(self.rangeSelection && toDate && [self isDateWithinCalendarBounds:toDate])
     {
-        if(self.rangeSelection && [self isDateValid:self.selectedEndDate])
+        self.selectedEndDate = toDate;
+        NSArray *indexPaths = [self indexPathsBetween:[self indexPathForDate:selectedDate] and:[self indexPathForDate:toDate]];
+        for(int i = 0; i < [indexPaths count]; i ++)
         {
-            NSArray *indexPaths = [self indexPathsBetween:[self indexPathForDate:self.selectedDate] and:[self indexPathForDate:self.selectedEndDate]];
-            for(int i = 0; i < [indexPaths count]; i ++)
-            {
-                [self selectCellAtIndexPath:[indexPaths objectAtIndex:i] animated:NO scrollPosition:(i == 0 ? UICollectionViewScrollPositionCenteredVertically : UICollectionViewScrollPositionNone)];
-            }
+            [self selectCellAtIndexPath:[indexPaths objectAtIndex:i] animated:NO scrollPosition:(i == 0 ? UICollectionViewScrollPositionCenteredVertically : UICollectionViewScrollPositionNone)];
         }
-        else
-        {
-            NSIndexPath *indexPath = [self indexPathForDate:self.selectedDate];
-            [self selectCellAtIndexPath:indexPath animated:NO scrollPosition:UICollectionViewScrollPositionCenteredVertically];
-        }
-        
     }
     
+}
+
+- (void)selectDate:(NSDate *)date
+{
+    if(date && [self isDateWithinCalendarBounds:date])
+    {
+        self.selectedDate = date;
+        NSIndexPath *indexPath = [self indexPathForDate:selectedDate];
+        [self selectCellAtIndexPath:indexPath animated:NO scrollPosition:UICollectionViewScrollPositionCenteredVertically];
+    }
 }
 
 - (UICollectionReusableView *)collectionView:(UICollectionView *)collectionView viewForSupplementaryElementOfKind:(NSString *)kind atIndexPath:(NSIndexPath *)indexPath
@@ -230,6 +235,7 @@ static NSUInteger const daysInWeek = 7;
         }
         else
         {
+            [headerView.previousMonthImage setImage:nil];
             [headerView.previousMonthBtn setTitle:@"<" forState:UIControlStateNormal];
         }
         
@@ -242,6 +248,7 @@ static NSUInteger const daysInWeek = 7;
         }
         else
         {
+            [headerView.nextMonthImage setImage:nil];
             [headerView.nextMonthBtn setTitle:@">" forState:UIControlStateNormal];
         }
         
