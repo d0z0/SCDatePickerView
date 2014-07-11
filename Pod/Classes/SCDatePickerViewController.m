@@ -121,7 +121,7 @@ static NSUInteger const daysInWeek = 7;
     offsetComponents.year = 1;
     
     if(!self.endDate)
-        self.endDate = [self.calendar dateByAddingComponents:offsetComponents toDate:[NSDate date] options:0];
+        self.endDate = [self.calendar dateByAddingComponents:offsetComponents toDate:self.startDate options:0];
     
     
 }
@@ -167,7 +167,7 @@ static NSUInteger const daysInWeek = 7;
 {
     NSDateComponents *firstOfMonthComponents = [self.calendar components:NSMonthCalendarUnit fromDate:[self firstDateOfMonthForSection:indexPath.section]];
     NSDateComponents *dateComponents = [self.calendar components:NSMonthCalendarUnit fromDate:[self dateForItemAtIndexPath:indexPath]];
-//    if([firstOfMonthComponents month] == [dateComponents month])
+    if([firstOfMonthComponents month] == [dateComponents month])
     {
         // the above check to prevent selecting of disabled cells
         UICollectionViewCell *cell = [self.collectionView cellForItemAtIndexPath:indexPath];
