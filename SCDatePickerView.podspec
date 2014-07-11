@@ -10,10 +10,7 @@
 Pod::Spec.new do |s|
   s.name             = "SCDatePickerView"
   s.version          = "0.1.0"
-  s.summary          = "SCDatePickerView is a date picker that supports single and range selection, and has a very customizalbe appearance"
-  s.description      = <<-DESC
-                       SCDatePickerView is a date picker that supports single and range selection, and has a very customizalbe appearance
-                       DESC
+  s.summary          = "SCDatePickerView is a fully customizable date picker that supports single and range selection"
   s.homepage         = "https://github.com/saturnine/SCDatePickerView"
   # s.screenshots     = "www.example.com/screenshots_1", "www.example.com/screenshots_2"
   s.license          = 'MIT'
@@ -24,10 +21,11 @@ Pod::Spec.new do |s|
   s.platform     = :ios, '7.0'
   s.requires_arc = true
 
-  s.source_files = 'Pod/Classes'
+  s.source_files = 'Pod/Classes/*.{h,m}'
   s.resources = 'Pod/Assets/*.png'
 
-  # s.public_header_files = 'Pod/Classes/**/*.h'
+  s.public_header_files = 'Pod/Classes/*.h'
+
   # s.frameworks = 'UIKit', 'MapKit'
   # s.dependency 'AFNetworking', '~> 2.3'
 end

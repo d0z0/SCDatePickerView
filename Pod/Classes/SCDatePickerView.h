@@ -7,11 +7,4 @@
 //
 
 #import <Foundation/Foundation.h>
-#import "SCDatePickerViewController.h"
-#import "SCDatePickerViewFlowLayout.h"
-#import "SCDatePickerViewHeader.h"
-#import "SCDatePickerViewCell.h"
-
-@interface SCDatePickerView : NSObject
-
-@end
+#import <SCDatePickerView/SCDatePickerViewController.h>

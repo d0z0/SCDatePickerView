@@ -127,11 +127,6 @@ static NSUInteger const daysInWeek = 7;
     
 }
 
-- (NSDate *)stripTimeFromDate:(NSDate *)date
-{
-    return [self.calendar dateFromComponents:[self.calendar components:NSYearCalendarUnit|NSMonthCalendarUnit|NSDayCalendarUnit fromDate:date]];
-}
-
 - (void)viewDidAppear:(BOOL)animated
 {
     if(self.selectedDate)
