@@ -7,4 +7,7 @@
 //
 
 #import <Foundation/Foundation.h>
+#import <SCDatePickerView/SCDatePickerViewFlowLayout.h>
+#import <SCDatePickerView/SCDatePickerViewHeader.h>
+#import <SCDatePickerView/SCDatePickerViewCell.h>
 #import <SCDatePickerView/SCDatePickerViewController.h>
