@@ -26,7 +26,12 @@
     datePickerVC.endDate = [NSDate dateWithTimeInterval:((24 * 60 * 60) * 152) sinceDate:[NSDate date]];
     
     // -- Pre selected dates
-    datePickerVC.selectedDate = [NSDate date];
+    NSDateComponents *comp = [NSDateComponents new];
+    comp.month = 1;
+    datePickerVC.selectedDate = [datePickerVC.calendar dateByAddingComponents:comp toDate:[NSDate date] options:0];
+    comp.day = 5;
+    
+    datePickerVC.selectedEndDate = [datePickerVC.calendar dateByAddingComponents:comp toDate:[NSDate date] options:0];
     
     // -- Continous calendar (show all months, scrolling vertically)
     // datePickerVC.continousCalendar = NO;
@@ -35,7 +40,7 @@
     // datePickerVC.currentMonthOffset = 0;
 
     // -- Allows a range of dates to be selected (only works accross months if continousCalendar is YES)
-    // datePickerVC.rangeSelection = YES;
+    datePickerVC.rangeSelection = YES;
 
     // -- Appearance customization
     // datePickerVC.monthHeaderHeight = 40.0f;

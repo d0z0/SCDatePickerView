@@ -15,7 +15,6 @@
 
 @interface SCDatePickerViewController ()
 
-
 @end
 
 static NSUInteger const daysInWeek = 7;
@@ -129,10 +128,10 @@ static NSUInteger const daysInWeek = 7;
 
 - (void)viewDidAppear:(BOOL)animated
 {
-    if(self.selectedDate)
+    if(self.selectedDate && !self.selectedEndDate)
         [self selectDate:self.selectedDate];
     else if(self.selectedDate && self.selectedEndDate)
-        [self selectDateRangefromDate:self.selectedDate toDate:self.selectedEndDate];
+        [self selectDateRangeFromDate:self.selectedDate toDate:self.selectedEndDate];
 }
 
 - (void)viewDidLoad
@@ -154,18 +153,23 @@ static NSUInteger const daysInWeek = 7;
     if(self.rangeSelection == YES)
     {
         // range selection requires continousCalendar
-        self.continousCalendar = YES;
+        //self.continousCalendar = YES;
         self.collectionView.allowsMultipleSelection = YES;
     }
 }
 
+/*
+ Method responsible for selecting a cell given an indexPath
+ indexPath parameter must be as per the current calendar format
+ if the calendar is not continous, indexPath.section != 0 may result in failure
+ */
 - (void)selectCellAtIndexPath:(NSIndexPath *)indexPath animated:(BOOL)animated scrollPosition:(int)scrollPosition
 {
-    
     NSDateComponents *firstOfMonthComponents = [self.calendar components:NSMonthCalendarUnit fromDate:[self firstDateOfMonthForSection:indexPath.section]];
     NSDateComponents *dateComponents = [self.calendar components:NSMonthCalendarUnit fromDate:[self dateForItemAtIndexPath:indexPath]];
-    if([firstOfMonthComponents month] == [dateComponents month])
+//    if([firstOfMonthComponents month] == [dateComponents month])
     {
+        // the above check to prevent selecting of disabled cells
         UICollectionViewCell *cell = [self.collectionView cellForItemAtIndexPath:indexPath];
         [cell setSelected:YES];
         [self.collectionView selectItemAtIndexPath:indexPath animated:animated scrollPosition:scrollPosition];
@@ -177,19 +181,19 @@ static NSUInteger const daysInWeek = 7;
     return (date && [self compareDate:self.startDate withDate:date] != NSOrderedDescending && [self compareDate:date withDate:self.endDate] != NSOrderedDescending);
 }
 
-- (void)selectDateRangefromDate:(NSDate *)fromDate toDate:(NSDate *)toDate
+- (void)selectDateRangeFromDate:(NSDate *)fromDate toDate:(NSDate *)toDate
 {
     [self selectDate:fromDate];
-    if(self.rangeSelection && toDate && [self isDateWithinCalendarBounds:toDate])
+    if(toDate && self.rangeSelection && [self isDateWithinCalendarBounds:toDate])
     {
         self.selectedEndDate = toDate;
-        NSArray *indexPaths = [self indexPathsBetween:[self indexPathForDate:selectedDate] and:[self indexPathForDate:toDate]];
+        NSArray *indexPaths = [self indexPathsBetween:[self indexPathForDate:fromDate] and:[self indexPathForDate:toDate]];
+        NSLog(@"Will select %d dates (%@ -> %@)", [indexPaths count], [self indexPathForDate:fromDate], [self indexPathForDate:toDate]);
         for(int i = 0; i < [indexPaths count]; i ++)
         {
             [self selectCellAtIndexPath:[indexPaths objectAtIndex:i] animated:NO scrollPosition:(i == 0 ? UICollectionViewScrollPositionCenteredVertically : UICollectionViewScrollPositionNone)];
         }
     }
-    
 }
 
 - (void)selectDate:(NSDate *)date
@@ -197,7 +201,15 @@ static NSUInteger const daysInWeek = 7;
     if(date && [self isDateWithinCalendarBounds:date])
     {
         self.selectedDate = date;
-        NSIndexPath *indexPath = [self indexPathForDate:selectedDate];
+        NSIndexPath *indexPath = [self indexPathForDate:date];
+        
+        if(indexPath.section > 0 && !self.continousCalendar)
+        {
+            self.currentMonthOffset = indexPath.section;
+            [self.collectionView reloadData];
+            int dateOffset  = [self indexPathForDate:selectedDate inSection:self.currentMonthOffset].item;
+            indexPath = [NSIndexPath indexPathForItem:dateOffset inSection:0];
+        }
         [self selectCellAtIndexPath:indexPath animated:NO scrollPosition:UICollectionViewScrollPositionCenteredVertically];
     }
 }
@@ -328,7 +340,6 @@ static NSUInteger const daysInWeek = 7;
     [self.collectionView reloadData];
 }
 
-
 - (void)nextMonth
 {
     self.currentMonthOffset += 1;
@@ -416,10 +427,18 @@ static NSUInteger const daysInWeek = 7;
     return [self.calendar dateByAddingComponents:cellOffset toDate:[self firstOfStartDate] options:0];
 }
 
+/*
+ returns the indexPath for given date
+ indexPath is returned correctly for continous/non-continous calendar
+ */
 - (NSIndexPath *)indexPathForDate:(NSDate *)date
 {
-    
     int section = [self.calendar components:NSMonthCalendarUnit fromDate:[self startDateMonth] toDate:date options:0].month;
+    return [self indexPathForDate:date inSection:section];
+}
+
+- (NSIndexPath *)indexPathForDate:(NSDate *)date inSection:(NSUInteger)section
+{
     NSDate *firstDateInSection = [self dateForItemAtIndexPath:[NSIndexPath indexPathForItem:0 inSection:section]];
     NSDateComponents *difference = [self.calendar components:NSDayCalendarUnit fromDate:firstDateInSection toDate:date options:0];
     NSLog(@"difference from %@ to %@ -> %@", firstDateInSection, date, difference);
@@ -429,15 +448,19 @@ static NSUInteger const daysInWeek = 7;
 - (NSArray *)indexPathsBetween:(NSIndexPath *)fromIndexPath and:(NSIndexPath *)toIndexPath
 {
     NSMutableArray *indexPaths = [[NSMutableArray alloc] init];
+    // in the same section for continous calendar
     if([fromIndexPath section] == [toIndexPath section])
     {
         NSUInteger s = [fromIndexPath section];
         for(NSUInteger i = [fromIndexPath row]; i <= [toIndexPath row] ; i ++)
         {
+            if(!self.continousCalendar)
+                s = 0;
             if(s < [self.collectionView numberOfSections])
                 [indexPaths addObject:[NSIndexPath indexPathForItem:i inSection:s]];
         }
     }
+    // accross sections for continous calendar
     else
     {
         for(NSUInteger s = [fromIndexPath section]; s <= [toIndexPath section]; s ++)
