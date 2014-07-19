@@ -12,6 +12,8 @@
 	<string>com.schubert.scdatepickerview</string>
 	<key>CFBundleInfoDictionaryVersion</key>
 	<string>6.0</string>
+	<key>UIMainStoryboardFile</key>
+	<string>Main</string>
 	<key>CFBundleName</key>
 	<string>$PRODUCT_NAME</string>
 	<key>CFBundlePackageType</key>

@@ -1,6 +1,6 @@
 //
 //  SCDatePickerViewFlowLayout.m
-//  SCDatePickerDemo
+//  SCDatePickerView
 //
 //  Created by Schubert Cardozo on 19/06/14.
 //  Copyright (c) 2014 Schubert Cardozo. All rights reserved.
@@ -18,11 +18,6 @@
 
     }
     return self;
-}
-
-- (void)prepareLayout
-{
-    
 }
 
 // -- REF -- http://stackoverflow.com/questions/17229350/cell-spacing-in-uicollectionview

@@ -19,10 +19,12 @@
 		6003F5B2195388D20070C39A /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6003F591195388D20070C39A /* UIKit.framework */; };
 		6003F5BA195388D20070C39A /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 6003F5B8195388D20070C39A /* InfoPlist.strings */; };
 		6003F5BC195388D20070C39A /* Tests.m in Sources */ = {isa = PBXBuildFile; fileRef = 6003F5BB195388D20070C39A /* Tests.m */; };
+		802F76B719796EB900BE348B /* SCDatePickerView.m in Sources */ = {isa = PBXBuildFile; fileRef = 802F76B619796EB900BE348B /* SCDatePickerView.m */; };
+		802F76B919797A6200BE348B /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 802F76B819797A6200BE348B /* Main.storyboard */; };
+		802F76BC19797BA300BE348B /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 802F76BB19797BA300BE348B /* ViewController.m */; };
 		8092A52F196C1E3700344A96 /* glyph-left-arrow@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 8092A52D196C1E3700344A96 /* glyph-left-arrow@2x.png */; };
 		8092A530196C1E3700344A96 /* glyph-right-arrow@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 8092A52E196C1E3700344A96 /* glyph-right-arrow@2x.png */; };
 		80C749DB196692E0009CFD94 /* SCDatePickerViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 80C749D3196692E0009CFD94 /* SCDatePickerViewCell.m */; };
-		80C749DC196692E0009CFD94 /* SCDatePickerViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 80C749D4196692E0009CFD94 /* SCDatePickerViewController.m */; };
 		80C749DD196692E0009CFD94 /* SCDatePickerViewFlowLayout.m in Sources */ = {isa = PBXBuildFile; fileRef = 80C749D5196692E0009CFD94 /* SCDatePickerViewFlowLayout.m */; };
 		80C749DE196692E0009CFD94 /* SCDatePickerViewHeader.m in Sources */ = {isa = PBXBuildFile; fileRef = 80C749D6196692E0009CFD94 /* SCDatePickerViewHeader.m */; };
 		9C97D8C8DC254C9B8C8EEBC8 /* libPods-Tests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 5E8800CFED9641FC8ABB7254 /* libPods-Tests.a */; };
@@ -62,14 +64,16 @@
 		6003F5BB195388D20070C39A /* Tests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = Tests.m; sourceTree = "<group>"; };
 		606FC2411953D9B200FFA9A0 /* Tests-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Tests-Prefix.pch"; sourceTree = "<group>"; };
 		8023093C196BEA7C00282962 /* SCDatePickerView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SCDatePickerView.h; path = ../../Pod/Classes/SCDatePickerView.h; sourceTree = "<group>"; };
+		802F76B619796EB900BE348B /* SCDatePickerView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = SCDatePickerView.m; path = ../../Pod/Classes/SCDatePickerView.m; sourceTree = "<group>"; };
+		802F76B819797A6200BE348B /* Main.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = Main.storyboard; sourceTree = "<group>"; };
+		802F76BA19797BA300BE348B /* ViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ViewController.h; sourceTree = "<group>"; };
+		802F76BB19797BA300BE348B /* ViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ViewController.m; sourceTree = "<group>"; };
 		8092A52D196C1E3700344A96 /* glyph-left-arrow@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "glyph-left-arrow@2x.png"; sourceTree = "<group>"; };
 		8092A52E196C1E3700344A96 /* glyph-right-arrow@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "glyph-right-arrow@2x.png"; sourceTree = "<group>"; };
 		80C749D3196692E0009CFD94 /* SCDatePickerViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = SCDatePickerViewCell.m; path = ../../Pod/Classes/SCDatePickerViewCell.m; sourceTree = "<group>"; };
-		80C749D4196692E0009CFD94 /* SCDatePickerViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = SCDatePickerViewController.m; path = ../../Pod/Classes/SCDatePickerViewController.m; sourceTree = "<group>"; };
 		80C749D5196692E0009CFD94 /* SCDatePickerViewFlowLayout.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = SCDatePickerViewFlowLayout.m; path = ../../Pod/Classes/SCDatePickerViewFlowLayout.m; sourceTree = "<group>"; };
 		80C749D6196692E0009CFD94 /* SCDatePickerViewHeader.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = SCDatePickerViewHeader.m; path = ../../Pod/Classes/SCDatePickerViewHeader.m; sourceTree = "<group>"; };
 		80C749D7196692E0009CFD94 /* SCDatePickerViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SCDatePickerViewCell.h; path = ../../Pod/Classes/SCDatePickerViewCell.h; sourceTree = "<group>"; };
-		80C749D8196692E0009CFD94 /* SCDatePickerViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SCDatePickerViewController.h; path = ../../Pod/Classes/SCDatePickerViewController.h; sourceTree = "<group>"; };
 		80C749D9196692E0009CFD94 /* SCDatePickerViewFlowLayout.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SCDatePickerViewFlowLayout.h; path = ../../Pod/Classes/SCDatePickerViewFlowLayout.h; sourceTree = "<group>"; };
 		80C749DA196692E0009CFD94 /* SCDatePickerViewHeader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SCDatePickerViewHeader.h; path = ../../Pod/Classes/SCDatePickerViewHeader.h; sourceTree = "<group>"; };
 		8B037EAC501941CE973ADF11 /* Pods-SCDatePickerView.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SCDatePickerView.xcconfig"; path = "Pods/Pods-SCDatePickerView.xcconfig"; sourceTree = "<group>"; };
@@ -143,10 +147,9 @@
 			children = (
 				8092A52C196C1D0600344A96 /* Images */,
 				8023093C196BEA7C00282962 /* SCDatePickerView.h */,
+				802F76B619796EB900BE348B /* SCDatePickerView.m */,
 				80C749D7196692E0009CFD94 /* SCDatePickerViewCell.h */,
 				80C749D3196692E0009CFD94 /* SCDatePickerViewCell.m */,
-				80C749D8196692E0009CFD94 /* SCDatePickerViewController.h */,
-				80C749D4196692E0009CFD94 /* SCDatePickerViewController.m */,
 				80C749DA196692E0009CFD94 /* SCDatePickerViewHeader.h */,
 				80C749D6196692E0009CFD94 /* SCDatePickerViewHeader.m */,
 				80C749D9196692E0009CFD94 /* SCDatePickerViewFlowLayout.h */,
@@ -155,6 +158,9 @@
 				6003F59D195388D20070C39A /* SCDatePickerAppDelegate.m */,
 				6003F5A8195388D20070C39A /* Images.xcassets */,
 				6003F594195388D20070C39A /* Supporting Files */,
+				802F76B819797A6200BE348B /* Main.storyboard */,
+				802F76BA19797BA300BE348B /* ViewController.h */,
+				802F76BB19797BA300BE348B /* ViewController.m */,
 			);
 			path = SCDatePickerView;
 			sourceTree = "<group>";
@@ -290,6 +296,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				8092A530196C1E3700344A96 /* glyph-right-arrow@2x.png in Resources */,
+				802F76B919797A6200BE348B /* Main.storyboard in Resources */,
 				6003F5A9195388D20070C39A /* Images.xcassets in Resources */,
 				8092A52F196C1E3700344A96 /* glyph-left-arrow@2x.png in Resources */,
 				6003F598195388D20070C39A /* InfoPlist.strings in Resources */,
@@ -374,8 +381,9 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				80C749DC196692E0009CFD94 /* SCDatePickerViewController.m in Sources */,
 				80C749DB196692E0009CFD94 /* SCDatePickerViewCell.m in Sources */,
+				802F76BC19797BA300BE348B /* ViewController.m in Sources */,
+				802F76B719796EB900BE348B /* SCDatePickerView.m in Sources */,
 				6003F59E195388D20070C39A /* SCDatePickerAppDelegate.m in Sources */,
 				6003F59A195388D20070C39A /* main.m in Sources */,
 				80C749DD196692E0009CFD94 /* SCDatePickerViewFlowLayout.m in Sources */,

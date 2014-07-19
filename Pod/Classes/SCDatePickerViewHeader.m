@@ -1,6 +1,6 @@
 //
 //  SCDatePickerViewHeader.m
-//  SCDatePickerDemo
+//  SCDatePickerView
 //
 //  Created by Schubert Cardozo on 19/06/14.
 //  Copyright (c) 2014 Schubert Cardozo. All rights reserved.
@@ -75,7 +75,6 @@
     }
     return self;
 }
-
 
 /*
  // Only override drawRect: if you perform custom drawing.

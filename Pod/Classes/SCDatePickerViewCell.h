@@ -1,6 +1,6 @@
 //
 //  SCDatePickerViewCell.h
-//  SCDatePickerDemo
+//  SCDatePickerView
 //
 //  Created by Schubert Cardozo on 19/06/14.
 //  Copyright (c) 2014 Schubert Cardozo. All rights reserved.

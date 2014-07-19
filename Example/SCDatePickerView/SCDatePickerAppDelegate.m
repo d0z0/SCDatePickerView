@@ -7,77 +7,56 @@
 //
 
 #import "SCDatePickerAppDelegate.h"
-#import "SCDatePickerViewController.h"
 
 @implementation SCDatePickerAppDelegate
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
-    self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
-
+    return YES;
     // Override point for customization after application launch.
+//    self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
     
-    SCDatePickerViewController *datePickerVC = [[SCDatePickerViewController alloc] init];
-    datePickerVC.delegate = self;
-    UINavigationController *navigation = [[UINavigationController alloc] initWithRootViewController:datePickerVC];
+//    SCDatePickerViewController *datePickerVC = [[SCDatePickerViewController alloc] init];
+//    datePickerVC.delegate = self;
+//    UINavigationController *navigation = [[UINavigationController alloc] initWithRootViewController:demoViewController];
+//
+//    // -- Date range which the selection must be restricted to
+//    datePickerVC.startDate = [NSDate date];
+//    datePickerVC.endDate = [NSDate dateWithTimeInterval:((24 * 60 * 60) * 152) sinceDate:[NSDate date]];
+//    
+//    // -- Pre selected dates
+//    NSDateComponents *comp = [NSDateComponents new];
+//    comp.month = 1;
+//    datePickerVC.selectedDate = [datePickerVC.calendar dateByAddingComponents:comp toDate:[NSDate date] options:0];
+//    comp.day = 5;
+//    
+//    datePickerVC.selectedEndDate = [datePickerVC.calendar dateByAddingComponents:comp toDate:[NSDate date] options:0];
+//    
+//    // -- Continous calendar (show all months, scrolling vertically)
+//    // datePickerVC.continousCalendar = NO;
+//    
+//    // -- Current month offset from startDate (only applies if continousCalendar is NO)
+//    // datePickerVC.currentMonthOffset = 0;
+//
+//    // -- Allows a range of dates to be selected (only works accross months if continousCalendar is YES)
+//    datePickerVC.rangeSelection = YES;
+//
+//    // -- Appearance customization
+//    // datePickerVC.monthHeaderHeight = 40.0f;
+//    // datePickerVC.headerFont = [UIFont fontWithName:@"HelveticaNeue-Bold" size:20.0f];
+//    // datePickerVC.dayOfWeekFont = [UIFont fontWithName:@"HelveticaNeue-Light" size:12.0f];
+//    // datePickerVC.dateFont = [UIFont fontWithName:@"HelveticaNeue-Light" size:18.0f];
+//    // datePickerVC.dateColor = [UIColor blackColor];
 
-    // -- Date range which the selection must be restricted to
-    datePickerVC.startDate = [NSDate date];
-    datePickerVC.endDate = [NSDate dateWithTimeInterval:((24 * 60 * 60) * 152) sinceDate:[NSDate date]];
-    
-    // -- Pre selected dates
-    NSDateComponents *comp = [NSDateComponents new];
-    comp.month = 1;
-    datePickerVC.selectedDate = [datePickerVC.calendar dateByAddingComponents:comp toDate:[NSDate date] options:0];
-    comp.day = 5;
-    
-    datePickerVC.selectedEndDate = [datePickerVC.calendar dateByAddingComponents:comp toDate:[NSDate date] options:0];
-    
-    // -- Continous calendar (show all months, scrolling vertically)
-    // datePickerVC.continousCalendar = NO;
-    
-    // -- Current month offset from startDate (only applies if continousCalendar is NO)
-    // datePickerVC.currentMonthOffset = 0;
-
-    // -- Allows a range of dates to be selected (only works accross months if continousCalendar is YES)
-    datePickerVC.rangeSelection = YES;
-
-    // -- Appearance customization
-    // datePickerVC.monthHeaderHeight = 40.0f;
-    // datePickerVC.headerFont = [UIFont fontWithName:@"HelveticaNeue-Bold" size:20.0f];
-    // datePickerVC.dayOfWeekFont = [UIFont fontWithName:@"HelveticaNeue-Light" size:12.0f];
-    // datePickerVC.dateFont = [UIFont fontWithName:@"HelveticaNeue-Light" size:18.0f];
-    // datePickerVC.dateColor = [UIColor blackColor];
-
-    [self.window setRootViewController:navigation];
-    [self.window makeKeyAndVisible];
+//    [self.window setRootViewController:navigation];
+//    [self.window makeKeyAndVisible];
     
     return YES;
 }
 
-- (UIImage *)SCDatePickerViewController:(SCDatePickerViewController *)controller previousMonthImageForMonth:(int)monthOffset
+-(NSUInteger)application:(UIApplication *)application supportedInterfaceOrientationsForWindow:(UIWindow *)window
 {
-    return [UIImage imageNamed:@"glyph-left-arrow.png"];
-}
-
-- (UIImage *)SCDatePickerViewController:(SCDatePickerViewController *)controller nextMonthImageForMonth:(int)monthOffset
-{
-    return [UIImage imageNamed:@"glyph-right-arrow.png"];
-}
-
-- (void)SCDatePickerViewController:(SCDatePickerViewController *)controller didSelectDate:(NSDate *)date
-{
-    NSLog(@"Date selected: %@", date);
-}
-
-- (void)SCDatePickerViewController:(SCDatePickerViewController *)controller didSelectDateRangeFrom:(NSDate *)fromDate to:(NSDate *)toDate
-{
-    NSLog(@"Date range selected: %@ - %@", fromDate, toDate);
-}
-
-- (UIView *)SCDatePickerViewController:(SCDatePickerViewController *)controller todayBackgroundViewForDate:(NSDate *)date
-{
-    return nil;
+    return UIInterfaceOrientationMaskAll;
 }
 
 - (void)applicationWillResignActive:(UIApplication *)application
