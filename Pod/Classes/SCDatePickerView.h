@@ -37,8 +37,8 @@
 // customization properties
 @property (nonatomic, strong) NSDate *startDate;
 @property (nonatomic, strong) NSDate *endDate;
-@property (nonatomic, strong) NSDate *selectedDate;
-@property (nonatomic, strong) NSDate *selectedEndDate;
+@property (nonatomic, readonly) NSDate *selectedDate;
+@property (nonatomic, readonly) NSDate *selectedEndDate;
 @property (nonatomic, assign) int currentMonthOffset;
 @property (nonatomic, assign) BOOL continousCalendar;
 
