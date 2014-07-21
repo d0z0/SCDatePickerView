@@ -21,7 +21,7 @@
 - (id)initWithFrame:(CGRect)frame
 {
     self = [super initWithFrame:frame];
-    if (self) {
+    if(self) {
         // Initialization code
         self.dateLabel = [[UILabel alloc] initWithFrame:self.contentView.frame];
         self.dateLabel.textAlignment = NSTextAlignmentCenter;

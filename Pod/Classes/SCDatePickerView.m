@@ -29,7 +29,7 @@
 - (id)initWithFrame:(CGRect)frame
 {
     self = [super initWithFrame:frame];
-    if (self) {
+    if(self) {
         [self setup];
     }
     return self;
@@ -38,7 +38,7 @@
 - (id)initWithCoder:(NSCoder *)aDecoder
 {
     self = [super initWithCoder:aDecoder];
-    if (self) {
+    if(self) {
         [self setup];
         
     }
@@ -91,7 +91,6 @@
     
     if(!self.endDate)
         self.endDate = [calendar dateByAddingComponents:offsetComponents toDate:self.startDate options:0];
-    
 }
 
 
@@ -181,7 +180,7 @@
 
 - (UICollectionReusableView *)collectionView:(UICollectionView *)collectionView viewForSupplementaryElementOfKind:(NSString *)kind atIndexPath:(NSIndexPath *)indexPath
 {
-    if (kind == UICollectionElementKindSectionHeader) {
+    if(kind == UICollectionElementKindSectionHeader) {
         SCDatePickerViewHeader *headerView = [calendarCollectionView dequeueReusableSupplementaryViewOfKind:UICollectionElementKindSectionHeader withReuseIdentifier:SCDatePickerViewHeaderIdentifier forIndexPath:indexPath];
         
         [headerView.topLineView setFrame:CGRectMake(0.0f, 0.0f, calendarCollectionView.bounds.size.width, 1.0f)];
@@ -199,7 +198,7 @@
         
         
         // previous month button
-        if ([self.delegate respondsToSelector:@selector(previousMonthImageForDatePickerView:)])
+        if([self.delegate respondsToSelector:@selector(previousMonthImageForDatePickerView:)])
         {
             [headerView.previousMonthImage setImage:[self.delegate previousMonthImageForDatePickerView:self]];
             [headerView.previousMonthImage setContentMode:UIViewContentModeScaleAspectFit];
@@ -212,7 +211,7 @@
         }
         
         // next month button
-        if ([self.delegate respondsToSelector:@selector(nextMonthImageForDatePickerView:)])
+        if([self.delegate respondsToSelector:@selector(nextMonthImageForDatePickerView:)])
         {
             [headerView.nextMonthImage setImage:[self.delegate nextMonthImageForDatePickerView:self]];
             [headerView.nextMonthImage setContentMode:UIViewContentModeScaleAspectFit];
@@ -293,11 +292,9 @@
     return nil;
 }
 
-
-
 - (CGSize)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout referenceSizeForHeaderInSection:(NSInteger)section
 {
-    if ([self.delegate respondsToSelector:@selector(heightForMonthHeaderInDatePickerView:)])
+    if([self.delegate respondsToSelector:@selector(heightForMonthHeaderInDatePickerView:)])
         defaultMonthHeaderHeight = [self.delegate heightForMonthHeaderInDatePickerView:self];
     
     return CGSizeMake(calendarCollectionView.bounds.size.width, defaultMonthHeaderHeight + 20.0f);
@@ -467,7 +464,7 @@
     if([[calendarCollectionView indexPathsForSelectedItems] count] == 1)
     {
         self.selectedDate = [self dateForItemAtIndexPath:indexPath];
-        if ([self.delegate respondsToSelector:@selector(datePickerView:didSelectDate:)])
+        if([self.delegate respondsToSelector:@selector(datePickerView:didSelectDate:)])
         {
             [self.delegate datePickerView:self didSelectDate:self.selectedDate];
         }
@@ -484,7 +481,7 @@
             [self selectCellAtIndexPath:i animated:NO scrollPosition:UICollectionViewScrollPositionNone];
         }
         
-        if ([self.delegate respondsToSelector:@selector(datePickerView:didSelectDateRangeFrom:to:)])
+        if([self.delegate respondsToSelector:@selector(datePickerView:didSelectDateRangeFrom:to:)])
         {
             [self.delegate datePickerView:self didSelectDateRangeFrom:self.selectedDate to:self.selectedEndDate];
         }
@@ -549,7 +546,7 @@
     cell.dateLabel.text = [self.dateFormatter stringFromDate:cellDate];
     cell.dateLabel.font = self.dateFont;
     
-    if ([self.delegate respondsToSelector:@selector(datePickerView:selectedBackgroundViewForDate:)])
+    if([self.delegate respondsToSelector:@selector(datePickerView:selectedBackgroundViewForDate:)])
     {
         cell.selectedBackgroundView = [self.delegate datePickerView:self selectedBackgroundViewForDate:cellDate];
     }
@@ -570,7 +567,7 @@
         // today view (only for enabled cells obviously)
         if([self compareDate:cellDate withDate:[NSDate date]] == NSOrderedSame)
         {
-            if ([self.delegate respondsToSelector:@selector(datePickerView:todayBackgroundViewForDate:)])
+            if([self.delegate respondsToSelector:@selector(datePickerView:todayBackgroundViewForDate:)])
             {
                 cell.todayBackgroundView = [self.delegate datePickerView:self todayBackgroundViewForDate:cellDate];
             }

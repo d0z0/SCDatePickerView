@@ -6,7 +6,7 @@
 //  Copyright (c) 2014 Schubert. All rights reserved.
 //
 
-#import <Foundation/Foundation.h>
+#import <UIKit/UIKit.h>
 #import "SCDatePickerViewFlowLayout.h"
 #import "SCDatePickerViewHeader.h"
 #import "SCDatePickerViewCell.h"
