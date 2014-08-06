@@ -18,13 +18,22 @@
     UICollectionView *calendarCollectionView;
 }
 
-@property (nonatomic, readwrite) NSDate *selectedDate;
-@property (nonatomic, readwrite) NSDate *selectedEndDate;
+@property (nonatomic, assign) BOOL continousCalendar;
 
 @end
 
 
 @implementation SCDatePickerView
+
+- (id)initWithFrame:(CGRect)frame style:(SCDatePickerVieWStyle)style
+{
+    self = [super initWithFrame:frame];
+    if(self) {
+        self.continousCalendar = (style == SCDatePickerViewStyleContinous);
+        [self setup];
+    }
+    return self;
+}
 
 - (id)initWithFrame:(CGRect)frame
 {
@@ -93,6 +102,15 @@
         self.endDate = [calendar dateByAddingComponents:offsetComponents toDate:self.startDate options:0];
 }
 
+- (void)setSelectedDate:(NSDate *)selectedDate
+{
+    _selectedDate = [calendar dateFromComponents:[calendar components:NSDayCalendarUnit|NSMonthCalendarUnit|NSYearCalendarUnit fromDate:selectedDate]];
+    if(selectedDate && [self isDateWithinCalendarBounds:selectedDate])
+    {
+        NSIndexPath *indexPath = [self indexPathForDate:selectedDate];
+        [self selectCellAtIndexPath:indexPath animated:NO scrollPosition:UICollectionViewScrollPositionCenteredVertically];
+    }
+}
 
 - (void)setup
 {
@@ -116,6 +134,7 @@
     calendarCollectionView.bounces = YES;
     calendarCollectionView.allowsMultipleSelection = self.rangeSelection;
     
+    NSLog(@"continous->%@", self.continousCalendar ? @"Y" : @"N");
     
     [self addSubview:calendarCollectionView];
 }
@@ -144,38 +163,6 @@
 - (BOOL)isDateWithinCalendarBounds:(NSDate *)date
 {
     return (date && [self compareDate:self.startDate withDate:date] != NSOrderedDescending && [self compareDate:date withDate:self.endDate] != NSOrderedDescending);
-}
-
-- (void)selectDateRangeFromDate:(NSDate *)fromDate toDate:(NSDate *)toDate
-{
-    [self selectDate:fromDate];
-    if(toDate && self.rangeSelection && [self isDateWithinCalendarBounds:toDate])
-    {
-        self.selectedEndDate = toDate;
-        NSArray *indexPaths = [self indexPathsBetween:[self indexPathForDate:fromDate] and:[self indexPathForDate:toDate]];
-        for(int i = 0; i < [indexPaths count]; i ++)
-        {
-            [self selectCellAtIndexPath:[indexPaths objectAtIndex:i] animated:NO scrollPosition:(i == 0 ? UICollectionViewScrollPositionCenteredVertically : UICollectionViewScrollPositionNone)];
-        }
-    }
-}
-
-- (void)selectDate:(NSDate *)date
-{
-    if(date && [self isDateWithinCalendarBounds:date])
-    {
-        self.selectedDate = date;
-        NSIndexPath *indexPath = [self indexPathForDate:date];
-        
-        if(indexPath.section > 0 && !self.continousCalendar)
-        {
-            self.currentMonthOffset = indexPath.section;
-            [calendarCollectionView reloadData];
-            int dateOffset  = [self indexPathForDate:self.selectedDate inSection:self.currentMonthOffset].item;
-            indexPath = [NSIndexPath indexPathForItem:dateOffset inSection:0];
-        }
-        [self selectCellAtIndexPath:indexPath animated:NO scrollPosition:UICollectionViewScrollPositionCenteredVertically];
-    }
 }
 
 - (UICollectionReusableView *)collectionView:(UICollectionView *)collectionView viewForSupplementaryElementOfKind:(NSString *)kind atIndexPath:(NSIndexPath *)indexPath
@@ -399,7 +386,7 @@
  */
 - (NSIndexPath *)indexPathForDate:(NSDate *)date
 {
-    int section = [calendar components:NSMonthCalendarUnit fromDate:[self startDateMonth] toDate:date options:0].month;
+    NSInteger section = [calendar components:NSMonthCalendarUnit fromDate:[self startDateMonth] toDate:date options:0].month;
     return [self indexPathForDate:date inSection:section];
 }
 

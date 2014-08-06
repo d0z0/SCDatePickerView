@@ -11,6 +11,11 @@
 #import "SCDatePickerViewHeader.h"
 #import "SCDatePickerViewCell.h"
 
+typedef NS_ENUM(NSInteger, SCDatePickerVieWStyle) {
+    SCDatePickerViewStyleContinous,
+    SCDatePickerViewStylePaginated                 
+};
+
 @class SCDatePickerView;
 
 @protocol SCDatePickerViewDelegate <NSObject>
@@ -37,10 +42,9 @@
 // customization properties
 @property (nonatomic, strong) NSDate *startDate;
 @property (nonatomic, strong) NSDate *endDate;
-@property (nonatomic, readonly) NSDate *selectedDate;
-@property (nonatomic, readonly) NSDate *selectedEndDate;
+@property (nonatomic, strong) NSDate *selectedDate;
+@property (nonatomic, strong) NSDate *selectedEndDate;
 @property (nonatomic, assign) int currentMonthOffset;
-@property (nonatomic, assign) BOOL continousCalendar;
 
 // FIXME -- switch to use delegate methods
 @property (nonatomic, strong) UIFont *headerFont;
@@ -53,7 +57,8 @@
 
 @property (nonatomic, assign) BOOL rangeSelection;
 
-- (void)selectDate:(NSDate *)date;
-- (void)selectDateRangeFromDate:(NSDate *)fromDate toDate:(NSDate *)toDate;
+- (id)initWithFrame:(CGRect)frame style:(SCDatePickerVieWStyle)style;
+//- (void)selectDate:(NSDate *)date;
+//- (void)selectDateRangeFromDate:(NSDate *)fromDate toDate:(NSDate *)toDate;
 
 @end
