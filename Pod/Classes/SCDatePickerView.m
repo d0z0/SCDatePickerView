@@ -132,7 +132,7 @@
     calendarCollectionView.backgroundColor = [UIColor whiteColor];
     
     calendarCollectionView.bounces = YES;
-    calendarCollectionView.allowsMultipleSelection = self.rangeSelection;
+    calendarCollectionView.allowsMultipleSelection = self.continousCalendar;
     
     NSLog(@"continous->%@", self.continousCalendar ? @"Y" : @"N");
     
@@ -450,7 +450,6 @@
 {
     if([[calendarCollectionView indexPathsForSelectedItems] count] == 1)
     {
-        self.selectedDate = [self dateForItemAtIndexPath:indexPath];
         if([self.delegate respondsToSelector:@selector(datePickerView:didSelectDate:)])
         {
             [self.delegate datePickerView:self didSelectDate:self.selectedDate];
@@ -501,19 +500,19 @@
     
     if([[calendarCollectionView indexPathsForSelectedItems] count] == 0)
     {
-        if(self.rangeSelection == YES)
+        if(self.continousCalendar == YES)
         {
             calendarCollectionView.allowsMultipleSelection = YES;
         }
         return YES;
     }
-    else if([[calendarCollectionView indexPathsForSelectedItems] count] == 1 && self.rangeSelection == YES)
+    else if([[calendarCollectionView indexPathsForSelectedItems] count] == 1 && self.continousCalendar == YES)
     {
         return YES;
     }
     else
     {
-        if(self.rangeSelection == YES)
+        if(self.continousCalendar == YES)
         {
             [calendarCollectionView reloadData];
             return NO;

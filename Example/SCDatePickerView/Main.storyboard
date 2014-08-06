@@ -1,48 +1,96 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="5056" systemVersion="13E28" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" initialViewController="hB1-7d-b85">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="5056" systemVersion="13E28" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" initialViewController="P7e-7G-zkL">
     <dependencies>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="3733"/>
     </dependencies>
     <scenes>
-        <!--View Controller-->
-        <scene sceneID="KxJ-KZ-WKp">
+        <!--Paginated PickerVC - Paginated (Single Selection)-->
+        <scene sceneID="Ogc-b0-C9w">
             <objects>
-                <viewController autoresizesArchivedViewToFullSize="NO" automaticallyAdjustsScrollViewInsets="NO" id="hB1-7d-b85" customClass="ViewController" sceneMemberID="viewController">
+                <viewController id="9xB-Yt-ywI" customClass="PaginatedPickerVC" sceneMemberID="viewController">
                     <layoutGuides>
-                        <viewControllerLayoutGuide type="top" id="ScR-jv-z91"/>
-                        <viewControllerLayoutGuide type="bottom" id="UrG-ha-o1V"/>
+                        <viewControllerLayoutGuide type="top" id="cK8-6c-bDB"/>
+                        <viewControllerLayoutGuide type="bottom" id="wkP-Lp-wAs"/>
                     </layoutGuides>
-                    <view key="view" contentMode="scaleToFill" id="UJw-hf-y0c">
+                    <view key="view" contentMode="scaleToFill" id="oFw-1f-fff">
                         <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                         <subviews>
-                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="S19-zH-FVd" customClass="SCDatePickerView">
-                                <rect key="frame" x="0.0" y="20" width="320" height="548"/>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Opx-ne-bWa">
+                                <rect key="frame" x="0.0" y="20" width="320" height="499"/>
                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
-                                <connections>
-                                    <outlet property="delegate" destination="hB1-7d-b85" id="P7y-5b-hME"/>
-                                </connections>
                             </view>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
                         <constraints>
-                            <constraint firstItem="S19-zH-FVd" firstAttribute="leading" secondItem="UJw-hf-y0c" secondAttribute="leading" id="1Uz-XJ-2vH"/>
-                            <constraint firstItem="S19-zH-FVd" firstAttribute="top" secondItem="ScR-jv-z91" secondAttribute="bottom" id="VZZ-XZ-xgR"/>
-                            <constraint firstItem="S19-zH-FVd" firstAttribute="bottom" secondItem="UrG-ha-o1V" secondAttribute="top" id="iBJ-PH-tis"/>
-                            <constraint firstItem="S19-zH-FVd" firstAttribute="trailing" secondItem="UJw-hf-y0c" secondAttribute="trailing" id="vHe-ou-zcG"/>
+                            <constraint firstItem="wkP-Lp-wAs" firstAttribute="top" secondItem="Opx-ne-bWa" secondAttribute="bottom" id="80d-gG-Ncp"/>
+                            <constraint firstItem="Opx-ne-bWa" firstAttribute="leading" secondItem="oFw-1f-fff" secondAttribute="leading" id="Nt7-1f-oHx"/>
+                            <constraint firstAttribute="trailing" secondItem="Opx-ne-bWa" secondAttribute="trailing" id="lDM-2G-kCo"/>
+                            <constraint firstItem="Opx-ne-bWa" firstAttribute="top" secondItem="cK8-6c-bDB" secondAttribute="bottom" id="vJ5-ww-NBp"/>
                         </constraints>
                     </view>
-                    <extendedEdge key="edgesForExtendedLayout"/>
-                    <connections>
-                        <outlet property="datePickerView" destination="S19-zH-FVd" id="b2z-Jt-jv8"/>
-                    </connections>
+                    <tabBarItem key="tabBarItem" title="Paginated (Single Selection)" image="calendar.png" id="rCB-uC-178"/>
                 </viewController>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="AS0-PY-WN7" userLabel="First Responder" sceneMemberID="firstResponder"/>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="pjR-2q-Fg7" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="268" y="-56"/>
+            <point key="canvasLocation" x="217" y="-149"/>
+        </scene>
+        <!--Tab Bar Controller-->
+        <scene sceneID="UDN-ld-pu8">
+            <objects>
+                <tabBarController definesPresentationContext="YES" id="P7e-7G-zkL" sceneMemberID="viewController">
+                    <simulatedTabBarMetrics key="simulatedBottomBarMetrics"/>
+                    <tabBar key="tabBar" contentMode="scaleToFill" id="rTC-ZD-Afw">
+                        <rect key="frame" x="129" y="330" width="163" height="49"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
+                        <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                    </tabBar>
+                    <connections>
+                        <segue destination="9xB-Yt-ywI" kind="relationship" relationship="viewControllers" id="ggl-Nf-d7x"/>
+                        <segue destination="QoG-UA-eqw" kind="relationship" relationship="viewControllers" id="XZB-aY-T96"/>
+                    </connections>
+                </tabBarController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="et5-qx-IQK" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="-317" y="178"/>
+        </scene>
+        <!--Continous PickerVC - Continous (Range Selection)-->
+        <scene sceneID="Pzx-Ig-Y9q">
+            <objects>
+                <viewController id="QoG-UA-eqw" customClass="ContinousPickerVC" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="CUE-MC-AdS"/>
+                        <viewControllerLayoutGuide type="bottom" id="8DQ-Tl-TzX"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="onE-Mx-xlD">
+                        <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
+                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                        <subviews>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="9HA-mk-ivf">
+                                <rect key="frame" x="0.0" y="20" width="320" height="499"/>
+                                <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                                <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
+                            </view>
+                        </subviews>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
+                        <constraints>
+                            <constraint firstItem="8DQ-Tl-TzX" firstAttribute="top" secondItem="9HA-mk-ivf" secondAttribute="bottom" id="IWg-5I-WoA"/>
+                            <constraint firstAttribute="trailing" secondItem="9HA-mk-ivf" secondAttribute="trailing" id="s3S-NE-i08"/>
+                            <constraint firstItem="9HA-mk-ivf" firstAttribute="top" secondItem="CUE-MC-AdS" secondAttribute="bottom" id="uZX-JB-XJ7"/>
+                            <constraint firstItem="9HA-mk-ivf" firstAttribute="leading" secondItem="onE-Mx-xlD" secondAttribute="leading" id="yu4-xJ-sRc"/>
+                        </constraints>
+                    </view>
+                    <tabBarItem key="tabBarItem" title="Continous (Range Selection)" image="calendar.png" id="Yxl-DO-iHn"/>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="gjo-b3-vap" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="217" y="504"/>
         </scene>
     </scenes>
+    <resources>
+        <image name="calendar.png" width="24" height="24"/>
+    </resources>
     <simulatedMetricsContainer key="defaultSimulatedMetrics">
         <simulatedStatusBarMetrics key="statusBar"/>
         <simulatedOrientationMetrics key="orientation"/>
