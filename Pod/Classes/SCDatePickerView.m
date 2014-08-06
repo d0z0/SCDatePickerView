@@ -452,7 +452,7 @@
     {
         if([self.delegate respondsToSelector:@selector(datePickerView:didSelectDate:)])
         {
-            [self.delegate datePickerView:self didSelectDate:self.selectedDate];
+            [self.delegate datePickerView:self didSelectDate:[self dateForItemAtIndexPath:indexPath]];
         }
     }
     else if([[calendarCollectionView indexPathsForSelectedItems] count] == 2)
