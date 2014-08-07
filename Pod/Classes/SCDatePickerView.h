@@ -24,8 +24,12 @@ typedef NS_ENUM(NSInteger, SCDatePickerVieWStyle) {
 
 - (CGFloat)heightForMonthHeaderInDatePickerView:(SCDatePickerView *)datePickerView;
 
-- (UIView *)datePickerView:(SCDatePickerView *)datePickerView selectedBackgroundViewForDate:(NSDate *)date;
-- (UIView *)datePickerView:(SCDatePickerView *)datePickerView todayBackgroundViewForDate:(NSDate *)date;
+- (UIColor *)datePickerView:(SCDatePickerView *)datePickerView selectedDateColorForDate:(NSDate *)date;
+- (UIColor *)datePickerView:(SCDatePickerView *)datePickerView enabledDateColorForDate:(NSDate *)date;
+- (UIColor *)datePickerView:(SCDatePickerView *)datePickerView disabledDateColorForDate:(NSDate *)date;
+
+- (UIView *)datePickerView:(SCDatePickerView *)datePickerView selectedBackgroundViewForDate:(NSDate *)date withFrame:(CGRect)frame;
+- (UIView *)datePickerView:(SCDatePickerView *)datePickerView todayBackgroundViewForDate:(NSDate *)date withFrame:(CGRect)frame;
 
 - (UIImage *)previousMonthImageForDatePickerView:(SCDatePickerView *)datePickerView;
 - (UIImage *)nextMonthImageForDatePickerView:(SCDatePickerView *)datePickerView;
@@ -50,7 +54,6 @@ typedef NS_ENUM(NSInteger, SCDatePickerVieWStyle) {
 @property (nonatomic, strong) UIFont *headerFont;
 @property (nonatomic, strong) UIFont *dayOfWeekFont;
 @property (nonatomic, strong) UIFont *dateFont;
-@property (nonatomic, strong) UIColor *dateColor;
 @property (nonatomic, strong) NSDateFormatter *dateFormatter;
 @property (nonatomic, strong) NSDateFormatter *monthYearFormatter;
 
