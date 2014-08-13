@@ -22,11 +22,12 @@
     datePickerView.delegate = self;
     datePickerView.endDate = [NSDate dateWithTimeInterval:((24 * 60 * 60) * 365) sinceDate:[NSDate date]];
     
-    // -- Pre selected dates
+    // -- Pre selected date range
+    datePickerView.selectedDate = [NSDate date];
     NSDateComponents *comp = [NSDateComponents new];
     comp.month = 1;
     NSDate *preSelectedDate = [[NSCalendar currentCalendar]  dateByAddingComponents:comp toDate:[NSDate date] options:0];
-    datePickerView.selectedDate = preSelectedDate;
+    datePickerView.selectedEndDate = preSelectedDate;
     [[[self.view subviews] objectAtIndex:0] addSubview:datePickerView];
 }
 

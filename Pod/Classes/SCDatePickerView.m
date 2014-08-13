@@ -322,15 +322,7 @@
     else if([[calendarCollectionView indexPathsForSelectedItems] count] == 2)
     {
         _selectedEndDate = [self dateForItemAtIndexPath:indexPath];
-        [self selectDateRange];
-        //        NSArray *sortedIndexPathsForSelectedItems = [[calendarCollectionView indexPathsForSelectedItems] sortedArrayUsingComparator:^NSComparisonResult(id obj1, id obj2) {
-        //            return [obj1 compare:obj2];
-        //        }];
-        //
-        //        for(NSIndexPath *i in [self indexPathsBetween:[sortedIndexPathsForSelectedItems objectAtIndex:0] and:[sortedIndexPathsForSelectedItems objectAtIndex:1]])
-        //        {
-        //            [calendarCollectionView selectItemAtIndexPath:i animated:NO scrollPosition:UICollectionViewScrollPositionNone];
-        //        }
+        [self selectDateRangeBetweenSelection];
         
         if([self.delegate respondsToSelector:@selector(datePickerView:didSelectDateRangeFrom:to:)])
         {
@@ -610,7 +602,7 @@
     return indexPaths;
 }
 
-- (void)selectDateRange
+- (void)selectDateRangeBetweenSelection
 {
     NSArray *sortedIndexPathsForSelectedItems = [[calendarCollectionView indexPathsForSelectedItems] sortedArrayUsingComparator:^NSComparisonResult(id obj1, id obj2) {
         return [obj1 compare:obj2];
@@ -620,7 +612,7 @@
     {
         [calendarCollectionView selectItemAtIndexPath:i animated:NO scrollPosition:UICollectionViewScrollPositionNone];
     }
-    
+    [calendarCollectionView reloadItemsAtIndexPaths:[self indexPathsBetween:[sortedIndexPathsForSelectedItems objectAtIndex:0] and:[sortedIndexPathsForSelectedItems objectAtIndex:1]]];
 }
 
 - (BOOL)date:(NSDate *)date isBetween:(NSDate *)firstDate and:(NSDate *)secondDate
