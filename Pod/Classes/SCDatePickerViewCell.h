@@ -8,9 +8,16 @@
 
 #import <UIKit/UIKit.h>
 
+typedef NS_ENUM(NSInteger, SCDatePickerViewCellDateType) {
+    SCDatePickerViewCellDateTypeDisabled, // date for cell does not belong to current month
+    SCDatePickerViewCellDateTypeInvalid, // date for cell does not fall within allowed limits
+    SCDatePickerViewCellDateTypeValid // date for cell belongs to current month and is selectable
+};
+
 @interface SCDatePickerViewCell : UICollectionViewCell
 
 @property (nonatomic, strong, readonly) UILabel *dateLabel;
 @property (nonatomic, strong) UIView *todayBackgroundView;
+@property (nonatomic, assign) SCDatePickerViewCellDateType cellDateType;
 
 @end

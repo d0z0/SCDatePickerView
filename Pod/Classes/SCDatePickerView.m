@@ -102,6 +102,7 @@
 - (void)setSelectedDate:(NSDate *)selectedDate
 {
     _selectedDate = [calendar dateFromComponents:[calendar components:NSDayCalendarUnit|NSMonthCalendarUnit|NSYearCalendarUnit fromDate:selectedDate]];
+
     if(selectedDate && [self isDateWithinCalendarBounds:selectedDate])
     {
         NSIndexPath *indexPath = [self indexPathForDate:selectedDate];
@@ -145,8 +146,8 @@
 - (void)selectCellAtIndexPath:(NSIndexPath *)indexPath animated:(BOOL)animated scrollPosition:(int)scrollPosition
 {
     NSDateComponents *firstOfMonthComponents = [calendar components:NSMonthCalendarUnit fromDate:[self firstDateOfMonthForSection:indexPath.section]];
-    NSDateComponents *dateComponents = [calendar components:NSMonthCalendarUnit fromDate:[self dateForItemAtIndexPath:indexPath]];
-    if([firstOfMonthComponents month] == [dateComponents month])
+    NSDateComponents *dateComponents = [calendar components:NSMonthCalendarUnit| NSYearCalendarUnit fromDate:[self dateForItemAtIndexPath:indexPath]];
+    if([firstOfMonthComponents month] == [dateComponents month] && [firstOfMonthComponents year] == [dateComponents year])
     {
         [self collectionView:calendarCollectionView didSelectItemAtIndexPath:indexPath];
         [calendarCollectionView selectItemAtIndexPath:indexPath animated:animated scrollPosition:scrollPosition];
@@ -181,7 +182,7 @@
         if([self.delegate respondsToSelector:@selector(previousMonthImageForDatePickerView:)])
         {
             [headerView.previousMonthImage setImage:[self.delegate previousMonthImageForDatePickerView:self]];
-            [headerView.previousMonthImage setContentMode:UIViewContentModeScaleAspectFit];
+            [headerView.previousMonthImage setContentMode:UIViewContentModeCenter];
             [headerView.previousMonthBtn setTitle:@"" forState:UIControlStateNormal];
         }
         else
@@ -194,7 +195,7 @@
         if([self.delegate respondsToSelector:@selector(nextMonthImageForDatePickerView:)])
         {
             [headerView.nextMonthImage setImage:[self.delegate nextMonthImageForDatePickerView:self]];
-            [headerView.nextMonthImage setContentMode:UIViewContentModeScaleAspectFit];
+            [headerView.nextMonthImage setContentMode:UIViewContentModeCenter];
             [headerView.nextMonthBtn setTitle:@"" forState:UIControlStateNormal];
         }
         else
@@ -514,7 +515,7 @@
         [calendarCollectionView cellForItemAtIndexPath:i].selected = NO;
     }
     
-    if([calendarCollectionView cellForItemAtIndexPath:indexPath].tag == 0)
+    if(((SCDatePickerViewCell *)[calendarCollectionView cellForItemAtIndexPath:indexPath]).cellDateType == SCDatePickerViewCellDateTypeInvalid)
     {
         [calendarCollectionView reloadData];
         return NO;
@@ -554,7 +555,7 @@
     
     cell.dateLabel.text = [self.dateFormatter stringFromDate:cellDate];
     cell.dateLabel.font = self.dateFont;
-
+    
     if([self.delegate respondsToSelector:@selector(datePickerView:selectedBackgroundViewForDate:withFrame:)])
     {
         cell.selectedBackgroundView = [self.delegate datePickerView:self selectedBackgroundViewForDate:cellDate withFrame:cell.contentView.frame];
@@ -567,13 +568,25 @@
     }
     
     NSDateComponents *firstOfMonthComponents = [calendar components:NSMonthCalendarUnit fromDate:[self firstDateOfMonthForSection:indexPath.section]];
-    // TODO -- based on critria for below, cell are classified as
-    // enabled(in-month/in-range)/disabled(out-month/in-range)/invalid(out-month/out-range)
+
     if(cellDateComponents.month == firstOfMonthComponents.month && ([self compareDate:cellDate withDate:self.startDate] != NSOrderedAscending && [self compareDate:cellDate withDate:self.endDate] != NSOrderedDescending))
     {
-        // Enabled cells
-        cell.tag = cellDateComponents.day;
+        cell.cellDateType = SCDatePickerViewCellDateTypeValid;
+    }
+    else if([self compareDate:cellDate withDate:self.startDate] != NSOrderedAscending && [self compareDate:cellDate withDate:self.endDate] != NSOrderedDescending)
+    {
+        cell.cellDateType = SCDatePickerViewCellDateTypeDisabled;
+    }
+    else
+    {
+        cell.cellDateType = SCDatePickerViewCellDateTypeInvalid;
+    }
 
+    
+    if(cell.cellDateType == SCDatePickerViewCellDateTypeValid)
+        {
+        cell.tag = cellDateComponents.day;
+        
         if([self compareDate:cellDate withDate:self.selectedDate] == NSOrderedSame)
         {
             [cell setSelected:YES];
@@ -601,15 +614,19 @@
             cell.todayBackgroundView.hidden = YES;
         }
     }
-    else
+    else if(cell.cellDateType == SCDatePickerViewCellDateTypeDisabled)
     {
-        // disabled cells
-        cell.tag = 0;
         if([self.delegate respondsToSelector:@selector(datePickerView:disabledDateColorForDate:)])
             cell.dateLabel.textColor = [self.delegate datePickerView:self disabledDateColorForDate:cellDate];
         else
             cell.dateLabel.textColor = [UIColor lightGrayColor];
-
+    }
+    else
+    {
+        if([self.delegate respondsToSelector:@selector(datePickerView:invalidDateColorForDate:)])
+            cell.dateLabel.textColor = [self.delegate datePickerView:self invalidDateColorForDate:cellDate];
+        else
+            cell.dateLabel.textColor = [UIColor lightGrayColor];
     }
     
     cell.layer.shouldRasterize = YES;
@@ -625,7 +642,6 @@
     
     return [[calendar dateFromComponents:firstComponents] compare:[calendar dateFromComponents:secondComponents]];
 }
-
 
 /*
  // Only override drawRect: if you perform custom drawing.

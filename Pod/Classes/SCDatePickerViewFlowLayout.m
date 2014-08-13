@@ -40,9 +40,9 @@
         
         // prevents the 1px line spacing -- quick fix.. overlaps cells a bit
         // TODO -- get a proper fix for this
-        CGRect frame = currentLayoutAttributes.frame;
-        frame.size.height +=1;
-        currentLayoutAttributes.frame = frame;
+//        CGRect frame = currentLayoutAttributes.frame;
+//        frame.size.height +=1;
+//        currentLayoutAttributes.frame = frame;
         
     }
     return answer;

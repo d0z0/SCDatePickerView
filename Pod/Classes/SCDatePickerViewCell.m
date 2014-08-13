@@ -35,6 +35,11 @@
         self.todayBackgroundView.layer.cornerRadius = self.contentView.frame.size.width/2;
         [self.contentView addSubview:self.todayBackgroundView];
         
+        UIView *lineView = [[UIView alloc] initWithFrame:CGRectMake(0.0f, frame.size.height-0.5f, frame.size.width, 0.5f)];
+        lineView.backgroundColor = [UIColor blackColor];
+        lineView.alpha = 0.25f;
+        [self.contentView addSubview:lineView];
+        
         [self.contentView sendSubviewToBack:self.todayBackgroundView];
     }
     return self;
