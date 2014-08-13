@@ -101,6 +101,7 @@
 
 - (void)setSelectedDate:(NSDate *)selectedDate
 {
+    NSLog(@"setSelectedDate");
     _selectedDate = [calendar dateFromComponents:[calendar components:NSDayCalendarUnit|NSMonthCalendarUnit|NSYearCalendarUnit fromDate:selectedDate]];
 
     if(selectedDate && [self isDateWithinCalendarBounds:selectedDate])
@@ -122,7 +123,6 @@
     [calendarCollectionView registerClass:[SCDatePickerViewCell class] forCellWithReuseIdentifier:kSCDatePickerViewCellIdentifier];
     [calendarCollectionView registerClass:[SCDatePickerViewHeader class] forSupplementaryViewOfKind:UICollectionElementKindSectionHeader withReuseIdentifier:SCDatePickerViewHeaderIdentifier];
     
-    
     calendarCollectionView.delegate = self;
     calendarCollectionView.dataSource = self;
     calendarCollectionView.showsHorizontalScrollIndicator = NO;
@@ -133,30 +133,6 @@
     calendarCollectionView.allowsMultipleSelection = self.continousCalendar;
     
     [self addSubview:calendarCollectionView];
-}
-
-/**** MAIN METHODS ****/
-
-
-/*
- Method responsible for selecting a cell given an indexPath
- indexPath parameter must be as per the current calendar format
- if the calendar is not continous, indexPath.section != 0 may result in failure
- */
-- (void)selectCellAtIndexPath:(NSIndexPath *)indexPath animated:(BOOL)animated scrollPosition:(int)scrollPosition
-{
-    NSDateComponents *firstOfMonthComponents = [calendar components:NSMonthCalendarUnit fromDate:[self firstDateOfMonthForSection:indexPath.section]];
-    NSDateComponents *dateComponents = [calendar components:NSMonthCalendarUnit| NSYearCalendarUnit fromDate:[self dateForItemAtIndexPath:indexPath]];
-    if([firstOfMonthComponents month] == [dateComponents month] && [firstOfMonthComponents year] == [dateComponents year])
-    {
-        [self collectionView:calendarCollectionView didSelectItemAtIndexPath:indexPath];
-        [calendarCollectionView selectItemAtIndexPath:indexPath animated:animated scrollPosition:scrollPosition];
-    }
-}
-
-- (BOOL)isDateWithinCalendarBounds:(NSDate *)date
-{
-    return (date && [self compareDate:self.startDate withDate:date] != NSOrderedDescending && [self compareDate:date withDate:self.endDate] != NSOrderedDescending);
 }
 
 - (UICollectionReusableView *)collectionView:(UICollectionView *)collectionView viewForSupplementaryElementOfKind:(NSString *)kind atIndexPath:(NSIndexPath *)indexPath
@@ -314,6 +290,227 @@
     return UIEdgeInsetsZero;
 }
 
+- (NSInteger)numberOfSectionsInCollectionView:(UICollectionView *)collectionView
+{
+    if(!self.continousCalendar)
+        return 1;
+    else
+        return [calendar components:NSMonthCalendarUnit fromDate:[self startDateMonth] toDate:[self endDateMonth] options:0].month + 1;
+}
+
+- (NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section
+{
+    NSRange weeksInMonth = [calendar rangeOfUnit:NSWeekCalendarUnit inUnit:NSMonthCalendarUnit forDate:[self firstDateOfMonthForSection:section]];
+    return (weeksInMonth.length * 7);
+}
+
+- (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath
+{
+    NSLog(@"didSelectItemAtIndexPath");
+    if([[calendarCollectionView indexPathsForSelectedItems] count] == 1)
+    {
+        _selectedDate = [self dateForItemAtIndexPath:indexPath];
+        [calendarCollectionView reloadItemsAtIndexPaths:@[indexPath]];
+        if([self.delegate respondsToSelector:@selector(datePickerView:didSelectDate:)])
+        {
+            [self.delegate datePickerView:self didSelectDate:[self dateForItemAtIndexPath:indexPath]];
+        }
+    }
+    else if([[calendarCollectionView indexPathsForSelectedItems] count] == 2)
+    {
+        _selectedEndDate = [self dateForItemAtIndexPath:indexPath];
+        NSArray *sortedIndexPathsForSelectedItems = [[calendarCollectionView indexPathsForSelectedItems] sortedArrayUsingComparator:^NSComparisonResult(id obj1, id obj2) {
+            return [obj1 compare:obj2];
+        }];
+        
+        for(NSIndexPath *i in [self indexPathsBetween:[sortedIndexPathsForSelectedItems objectAtIndex:0] and:[sortedIndexPathsForSelectedItems objectAtIndex:1]])
+        {
+            [calendarCollectionView selectItemAtIndexPath:i animated:NO scrollPosition:UICollectionViewScrollPositionNone];
+        }
+        
+        if([self.delegate respondsToSelector:@selector(datePickerView:didSelectDateRangeFrom:to:)])
+        {
+            [self.delegate datePickerView:self didSelectDateRangeFrom:self.selectedDate to:self.selectedEndDate];
+        }
+    }
+}
+
+- (BOOL)collectionView:(UICollectionView *)collectionView shouldDeselectItemAtIndexPath:(NSIndexPath *)indexPath
+{
+    NSLog(@"shouldDeselectItemAtIndexPath");
+    if(self.continousCalendar == YES) // self.rangeSelection == YES)
+    {
+        _selectedDate = nil;
+        _selectedEndDate = nil;
+        [calendarCollectionView reloadData];
+        return NO;
+    }
+    return YES;
+}
+
+- (void)collectionView:(UICollectionView *)collectionView didDeselectItemAtIndexPath:(NSIndexPath *)indexPath
+{
+    NSLog(@"didDeselectItemAtIndexPath");
+    _selectedDate = nil;
+    [calendarCollectionView reloadItemsAtIndexPaths:@[indexPath]];
+}
+
+- (BOOL)collectionView:(UICollectionView *)collectionView shouldHighlightItemAtIndexPath:(NSIndexPath *)indexPath
+{
+    return YES;
+}
+
+- (BOOL)collectionView:(UICollectionView *)collectionView shouldSelectItemAtIndexPath:(NSIndexPath *)indexPath
+{
+    NSLog(@"shouldSelectItemAtIndexPath");
+    
+    if(((SCDatePickerViewCell *)[calendarCollectionView cellForItemAtIndexPath:indexPath]).cellDateType == SCDatePickerViewCellDateTypeInvalid)
+    {
+        return NO;
+    }
+    
+    if([[calendarCollectionView indexPathsForSelectedItems] count] == 0)
+    {
+        if(self.continousCalendar == YES) // && self.rangeSelection == YES)
+        {
+            calendarCollectionView.allowsMultipleSelection = YES;
+        }
+        return YES;
+    }
+    else if([[calendarCollectionView indexPathsForSelectedItems] count] == 1 && self.continousCalendar == YES) // && self.rangeSelection == YES)
+    {
+        return YES;
+    }
+    else
+    {
+        if(self.continousCalendar == YES) // self.rangeSelection == YES)
+        {
+            _selectedDate = nil;
+            _selectedEndDate = nil;
+            [calendarCollectionView reloadData];
+            return NO;
+        }
+        else
+        {
+            return YES;
+        }
+    }
+}
+
+- (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath
+{
+    SCDatePickerViewCell *cell = [calendarCollectionView dequeueReusableCellWithReuseIdentifier:kSCDatePickerViewCellIdentifier forIndexPath:indexPath];
+    NSDate *cellDate = [self dateForItemAtIndexPath:indexPath];
+    NSDateComponents *cellDateComponents = [calendar components:NSCalendarUnitDay | NSCalendarUnitMonth | NSCalendarUnitYear fromDate:cellDate];
+    
+    cell.dateLabel.text = [self.dateFormatter stringFromDate:cellDate];
+    cell.dateLabel.font = self.dateFont;
+    
+    if([self.delegate respondsToSelector:@selector(datePickerView:selectedBackgroundViewForDate:withFrame:)])
+    {
+        cell.selectedBackgroundView = [self.delegate datePickerView:self selectedBackgroundViewForDate:cellDate withFrame:cell.contentView.frame];
+    }
+    else
+    {
+        UIView *selectedBackgroundView = [[UIView alloc] initWithFrame:cell.contentView.frame];
+        selectedBackgroundView.backgroundColor = [UIColor lightGrayColor];
+        cell.selectedBackgroundView = selectedBackgroundView;
+    }
+    
+    NSDateComponents *firstOfMonthComponents = [calendar components:NSMonthCalendarUnit fromDate:[self firstDateOfMonthForSection:indexPath.section]];
+    
+    if(cellDateComponents.month == firstOfMonthComponents.month && ([self compareDate:cellDate withDate:self.startDate] != NSOrderedAscending && [self compareDate:cellDate withDate:self.endDate] != NSOrderedDescending))
+    {
+        if(self.selectedDate && [self compareDate:cellDate withDate:self.selectedDate] == NSOrderedSame)
+        {
+            [calendarCollectionView selectItemAtIndexPath:indexPath animated:NO scrollPosition:UICollectionViewScrollPositionNone];
+            [cell setSelected:YES];
+        }
+        cell.cellDateType = SCDatePickerViewCellDateTypeValid;
+    }
+    else if([self compareDate:cellDate withDate:self.startDate] != NSOrderedAscending && [self compareDate:cellDate withDate:self.endDate] != NSOrderedDescending)
+    {
+        cell.cellDateType = SCDatePickerViewCellDateTypeDisabled;
+    }
+    else
+    {
+        cell.cellDateType = SCDatePickerViewCellDateTypeInvalid;
+    }
+    
+    if(cell.cellDateType == SCDatePickerViewCellDateTypeValid)
+    {
+        NSLog(@"SCDatePickerViewCellDateTypeValid");
+        NSLog(@"cell.selected->%@", cell.selected ? @"Y" : @"N");
+        cell.tag = cellDateComponents.day;
+        
+        if(cell.selected)
+        {
+            if([self.delegate respondsToSelector:@selector(datePickerView:selectedDateColorForDate:)])
+            {
+                cell.dateLabel.textColor = [self.delegate datePickerView:self selectedDateColorForDate:cellDate];
+            }
+            else
+            {
+                cell.dateLabel.textColor = [UIColor blackColor];
+            }
+        }
+        else
+        {
+            if([self.delegate respondsToSelector:@selector(datePickerView:enabledDateColorForDate:)])
+                cell.dateLabel.textColor = [self.delegate datePickerView:self enabledDateColorForDate:cellDate];
+            else
+                cell.dateLabel.textColor = [UIColor darkGrayColor];
+        }
+        //        // today view (only for enabled cells obviously)
+        //        if([self compareDate:cellDate withDate:[NSDate date]] == NSOrderedSame)
+        //        {
+        //            if([self.delegate respondsToSelector:@selector(datePickerView:todayBackgroundViewForDate:withFrame:)])
+        //            {
+        //                cell.todayBackgroundView = [self.delegate datePickerView:self todayBackgroundViewForDate:cellDate withFrame:cell.contentView.frame];
+        //            }
+        //            cell.todayBackgroundView.hidden = NO;
+        //        }
+        //        else
+        //        {
+        //            cell.todayBackgroundView.hidden = YES;
+        //        }
+    }
+    else if(cell.cellDateType == SCDatePickerViewCellDateTypeDisabled)
+    {
+        NSLog(@"SCDatePickerViewCellDateTypeDisabled");
+        
+        if([self.delegate respondsToSelector:@selector(datePickerView:disabledDateColorForDate:)])
+            cell.dateLabel.textColor = [self.delegate datePickerView:self disabledDateColorForDate:cellDate];
+        else
+            cell.dateLabel.textColor = [UIColor grayColor];
+    }
+    else if(cell.cellDateType == SCDatePickerViewCellDateTypeInvalid)
+    {
+        NSLog(@"SCDatePickerViewCellDateTypeInvalid");
+        if([self.delegate respondsToSelector:@selector(datePickerView:invalidDateColorForDate:)])
+            cell.dateLabel.textColor = [self.delegate datePickerView:self invalidDateColorForDate:cellDate];
+        else
+        {
+            NSLog(@"greeee");
+            cell.dateLabel.textColor = [UIColor lightGrayColor];
+        }
+    }
+    
+    cell.layer.shouldRasterize = YES;
+    cell.layer.rasterizationScale = [UIScreen mainScreen].scale;
+    
+    return cell;
+}
+
+/*
+ CALENDAR FUNCTIONS
+ */
+
+- (BOOL)isDateWithinCalendarBounds:(NSDate *)date
+{
+    return (date && [self compareDate:self.startDate withDate:date] != NSOrderedDescending && [self compareDate:date withDate:self.endDate] != NSOrderedDescending);
+}
+
 - (NSDate *)startDateMonth
 {
     NSDateComponents *components = [calendar components:NSCalendarUnitYear|NSCalendarUnitMonth|NSCalendarUnitDay fromDate:self.startDate];
@@ -329,14 +526,6 @@
     return [calendar dateFromComponents:components];
 }
 
-- (NSInteger)numberOfSectionsInCollectionView:(UICollectionView *)collectionView
-{
-    if(!self.continousCalendar)
-        return 1;
-    else
-        return [calendar components:NSMonthCalendarUnit fromDate:[self startDateMonth] toDate:[self endDateMonth] options:0].month + 1;
-}
-
 - (NSDate *)firstDateOfMonthForSection:(NSInteger)section
 {
     NSDateComponents *offsetComponents = [[NSDateComponents alloc] init];
@@ -345,12 +534,6 @@
     else
         offsetComponents.month = section;
     return [calendar dateByAddingComponents:offsetComponents toDate:[self startDateMonth] options:0];
-}
-
-- (NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section
-{
-    NSRange weeksInMonth = [calendar rangeOfUnit:NSWeekCalendarUnit inUnit:NSMonthCalendarUnit forDate:[self firstDateOfMonthForSection:section]];
-    return (weeksInMonth.length * 7);
 }
 
 - (NSDate *)firstOfStartDate
@@ -374,10 +557,6 @@
     return [calendar dateByAddingComponents:cellOffset toDate:[self firstOfStartDate] options:0];
 }
 
-/*
- returns the indexPath for given date
- indexPath is returned correctly for continous/non-continous calendar
- */
 - (NSIndexPath *)indexPathForDate:(NSDate *)date
 {
     NSInteger section = [calendar components:NSMonthCalendarUnit fromDate:[self startDateMonth] toDate:date options:0].month;
@@ -438,201 +617,6 @@
         }
     }
     return indexPaths;
-}
-
-- (void)setSelectedDateColorForCell:(SCDatePickerViewCell *)cell
-{
-    NSDate *cellDate = [self dateForItemAtIndexPath:[calendarCollectionView indexPathForCell:cell]];
-    if([self.delegate respondsToSelector:@selector(datePickerView:selectedDateColorForDate:)])
-    {
-        cell.dateLabel.textColor = [self.delegate datePickerView:self selectedDateColorForDate:cellDate];
-    }
-    else
-    {
-        cell.dateLabel.textColor = [UIColor blackColor];
-    }
-
-}
-
-- (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath
-{
-    NSLog(@"didSelectItemAtIndexPath");
-    [self setSelectedDateColorForCell:(SCDatePickerViewCell *)[calendarCollectionView cellForItemAtIndexPath:indexPath]];
-
-    if([[calendarCollectionView indexPathsForSelectedItems] count] == 1)
-    {
-        if([self.delegate respondsToSelector:@selector(datePickerView:didSelectDate:)])
-        {
-            [self.delegate datePickerView:self didSelectDate:[self dateForItemAtIndexPath:indexPath]];
-        }
-    }
-    else if([[calendarCollectionView indexPathsForSelectedItems] count] == 2)
-    {
-        self.selectedEndDate = [self dateForItemAtIndexPath:indexPath];
-        NSArray *sortedIndexPathsForSelectedItems = [[calendarCollectionView indexPathsForSelectedItems] sortedArrayUsingComparator:^NSComparisonResult(id obj1, id obj2) {
-            return [obj1 compare:obj2];
-        }];
-        
-        for(NSIndexPath *i in [self indexPathsBetween:[sortedIndexPathsForSelectedItems objectAtIndex:0] and:[sortedIndexPathsForSelectedItems objectAtIndex:1]])
-        {
-            [self selectCellAtIndexPath:i animated:NO scrollPosition:UICollectionViewScrollPositionNone];
-        }
-        
-        if([self.delegate respondsToSelector:@selector(datePickerView:didSelectDateRangeFrom:to:)])
-        {
-            [self.delegate datePickerView:self didSelectDateRangeFrom:self.selectedDate to:self.selectedEndDate];
-        }
-    }
-}
-
-- (BOOL)collectionView:(UICollectionView *)collectionView shouldDeselectItemAtIndexPath:(NSIndexPath *)indexPath
-{
-    return NO;
-}
-
-- (void)collectionView:(UICollectionView *)collectionView didDeselectItemAtIndexPath:(NSIndexPath *)indexPath
-{
-    NSLog(@"didDeselectItemAtIndexPath");
-    
-    // set date color
-    SCDatePickerViewCell *cell = (SCDatePickerViewCell *)[calendarCollectionView cellForItemAtIndexPath:indexPath];
-    NSDate *cellDate = [self dateForItemAtIndexPath:indexPath];
-    if([self.delegate respondsToSelector:@selector(datePickerView:enabledDateColorForDate:)])
-        cell.dateLabel.textColor = [self.delegate datePickerView:self enabledDateColorForDate:cellDate];
-    else
-        cell.dateLabel.textColor = [UIColor darkGrayColor];
-}
-
-- (BOOL)collectionView:(UICollectionView *)collectionView shouldHighlightItemAtIndexPath:(NSIndexPath *)indexPath
-{
-    return YES;
-}
-
-- (BOOL)collectionView:(UICollectionView *)collectionView shouldSelectItemAtIndexPath:(NSIndexPath *)indexPath
-{
-    for(NSIndexPath *i in [calendarCollectionView indexPathsForSelectedItems])
-    {
-        [calendarCollectionView cellForItemAtIndexPath:i].selected = NO;
-    }
-    
-    if(((SCDatePickerViewCell *)[calendarCollectionView cellForItemAtIndexPath:indexPath]).cellDateType == SCDatePickerViewCellDateTypeInvalid)
-    {
-        [calendarCollectionView reloadData];
-        return NO;
-    }
-    
-    if([[calendarCollectionView indexPathsForSelectedItems] count] == 0)
-    {
-        if(self.continousCalendar == YES)
-        {
-            calendarCollectionView.allowsMultipleSelection = YES;
-        }
-        return YES;
-    }
-    else if([[calendarCollectionView indexPathsForSelectedItems] count] == 1 && self.continousCalendar == YES)
-    {
-        return YES;
-    }
-    else
-    {
-        if(self.continousCalendar == YES)
-        {
-            [calendarCollectionView reloadData];
-            return NO;
-        }
-        else
-        {
-            return YES;
-        }
-    }
-}
-
-- (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath
-{
-    SCDatePickerViewCell *cell = [calendarCollectionView dequeueReusableCellWithReuseIdentifier:kSCDatePickerViewCellIdentifier forIndexPath:indexPath];
-    NSDate *cellDate = [self dateForItemAtIndexPath:indexPath];
-    NSDateComponents *cellDateComponents = [calendar components:NSCalendarUnitDay | NSCalendarUnitMonth | NSCalendarUnitYear fromDate:cellDate];
-    
-    cell.dateLabel.text = [self.dateFormatter stringFromDate:cellDate];
-    cell.dateLabel.font = self.dateFont;
-    
-    if([self.delegate respondsToSelector:@selector(datePickerView:selectedBackgroundViewForDate:withFrame:)])
-    {
-        cell.selectedBackgroundView = [self.delegate datePickerView:self selectedBackgroundViewForDate:cellDate withFrame:cell.contentView.frame];
-    }
-    else
-    {
-        UIView *selectedBackgroundView = [[UIView alloc] initWithFrame:cell.contentView.frame];
-        selectedBackgroundView.backgroundColor = [UIColor lightGrayColor];
-        cell.selectedBackgroundView = selectedBackgroundView;
-    }
-    
-    NSDateComponents *firstOfMonthComponents = [calendar components:NSMonthCalendarUnit fromDate:[self firstDateOfMonthForSection:indexPath.section]];
-
-    if(cellDateComponents.month == firstOfMonthComponents.month && ([self compareDate:cellDate withDate:self.startDate] != NSOrderedAscending && [self compareDate:cellDate withDate:self.endDate] != NSOrderedDescending))
-    {
-        cell.cellDateType = SCDatePickerViewCellDateTypeValid;
-    }
-    else if([self compareDate:cellDate withDate:self.startDate] != NSOrderedAscending && [self compareDate:cellDate withDate:self.endDate] != NSOrderedDescending)
-    {
-        cell.cellDateType = SCDatePickerViewCellDateTypeDisabled;
-    }
-    else
-    {
-        cell.cellDateType = SCDatePickerViewCellDateTypeInvalid;
-    }
-
-    
-    if(cell.cellDateType == SCDatePickerViewCellDateTypeValid)
-        {
-        cell.tag = cellDateComponents.day;
-        
-        if([self compareDate:cellDate withDate:self.selectedDate] == NSOrderedSame)
-        {
-            [cell setSelected:YES];
-            [self setSelectedDateColorForCell:cell];
-        }
-        else
-        {
-            if([self.delegate respondsToSelector:@selector(datePickerView:enabledDateColorForDate:)])
-                cell.dateLabel.textColor = [self.delegate datePickerView:self enabledDateColorForDate:cellDate];
-            else
-                cell.dateLabel.textColor = [UIColor darkGrayColor];
-        }
-        
-        // today view (only for enabled cells obviously)
-        if([self compareDate:cellDate withDate:[NSDate date]] == NSOrderedSame)
-        {
-            if([self.delegate respondsToSelector:@selector(datePickerView:todayBackgroundViewForDate:withFrame:)])
-            {
-                cell.todayBackgroundView = [self.delegate datePickerView:self todayBackgroundViewForDate:cellDate withFrame:cell.contentView.frame];
-            }
-            cell.todayBackgroundView.hidden = NO;
-        }
-        else
-        {
-            cell.todayBackgroundView.hidden = YES;
-        }
-    }
-    else if(cell.cellDateType == SCDatePickerViewCellDateTypeDisabled)
-    {
-        if([self.delegate respondsToSelector:@selector(datePickerView:disabledDateColorForDate:)])
-            cell.dateLabel.textColor = [self.delegate datePickerView:self disabledDateColorForDate:cellDate];
-        else
-            cell.dateLabel.textColor = [UIColor lightGrayColor];
-    }
-    else
-    {
-        if([self.delegate respondsToSelector:@selector(datePickerView:invalidDateColorForDate:)])
-            cell.dateLabel.textColor = [self.delegate datePickerView:self invalidDateColorForDate:cellDate];
-        else
-            cell.dateLabel.textColor = [UIColor lightGrayColor];
-    }
-    
-    cell.layer.shouldRasterize = YES;
-    cell.layer.rasterizationScale = [UIScreen mainScreen].scale;
-    
-    return cell;
 }
 
 - (int)compareDate:(NSDate *)firstDate withDate:(NSDate *)secondDate
