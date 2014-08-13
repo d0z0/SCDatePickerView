@@ -17,7 +17,6 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-
     SCDatePickerView *datePickerView = [[SCDatePickerView alloc] initWithFrame:self.view.bounds style:SCDatePickerViewStyleContinous];
     datePickerView.delegate = self;
     datePickerView.endDate = [NSDate dateWithTimeInterval:((24 * 60 * 60) * 365) sinceDate:[NSDate date]];

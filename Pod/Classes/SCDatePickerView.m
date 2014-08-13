@@ -223,22 +223,28 @@
             [headerView.previousMonthBtn addTarget:self action:@selector(previousMonth) forControlEvents:
              UIControlEventTouchUpInside];
             [headerView.previousMonthBtn setHidden:NO];
+            [headerView.previousMonthImage setHidden:NO];
+
             
             [headerView.nextMonthImage setFrame:CGRectMake(calendarCollectionView.bounds.size.width - defaultMonthHeaderHeight + 5.0f, 5.0f, defaultMonthHeaderHeight - 10.0f, defaultMonthHeaderHeight - 10.0f)];
             [headerView.nextMonthBtn setFrame:headerView.nextMonthImage.frame];
             [headerView.nextMonthBtn addTarget:self action:@selector(nextMonth) forControlEvents:UIControlEventTouchUpInside];
             [headerView.nextMonthBtn setHidden:NO];
+            [headerView.nextMonthImage setHidden:NO];
         }
         else
         {
             [headerView.previousMonthBtn setHidden:YES];
-            [headerView.previousMonthBtn setHidden:YES];
+            [headerView.nextMonthBtn setHidden:YES];
+            [headerView.previousMonthImage setHidden:YES];
+            [headerView.nextMonthImage setHidden:YES];
+
         }
         
         NSArray *dow = @[@"SUN", @"MON", @"TUE", @"WED", @"THU", @"FRI", @"SAT"];
-        
-        [headerView.daysOfWeekView setFrame:CGRectMake(0.0f, defaultMonthHeaderHeight, calendarCollectionView.bounds.size.width, 20.0f)];
-        CGFloat dayWidth = calendarCollectionView.bounds.size.width / 7;
+        int dayWidth = floorf(calendarCollectionView.bounds.size.width / 7);
+        int inset = fmod(calendarCollectionView.bounds.size.width, 7);
+        [headerView.daysOfWeekView setFrame:CGRectMake(inset/2.0f, defaultMonthHeaderHeight, calendarCollectionView.bounds.size.width - inset, 20.0f)];
         for(int i = 0; i < 7; i ++)
         {
             UILabel *dayLabel = [[headerView.daysOfWeekView subviews] objectAtIndex:i];
@@ -275,7 +281,7 @@
 
 - (CGSize)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout sizeForItemAtIndexPath:(NSIndexPath *)indexPath
 {
-    CGFloat itemWidth = calendarCollectionView.bounds.size.width / 7;
+    int itemWidth = floorf(calendarCollectionView.bounds.size.width / 7.0f);
     return CGSizeMake(itemWidth, itemWidth);
 }
 
@@ -291,7 +297,8 @@
 
 - (UIEdgeInsets)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout insetForSectionAtIndex:(NSInteger)section
 {
-    return UIEdgeInsetsZero;
+    int rem = fmod(calendarCollectionView.bounds.size.width, 7);
+    return UIEdgeInsetsMake(0.0f, rem/2.0f, 0.0f, rem/2.0f);
 }
 
 - (NSInteger)numberOfSectionsInCollectionView:(UICollectionView *)collectionView
@@ -559,6 +566,8 @@
     // in the same section for continous calendar
     if([fromIndexPath section] == [toIndexPath section])
     {
+        NSLog(@"same");
+
         NSUInteger s = [fromIndexPath section];
         for(NSUInteger i = [fromIndexPath row]; i <= [toIndexPath row] ; i ++)
         {
@@ -571,6 +580,7 @@
     // accross sections for continous calendar
     else
     {
+        NSLog(@"across");
         for(NSUInteger s = [fromIndexPath section]; s <= [toIndexPath section]; s ++)
         {
             if(s >= [calendarCollectionView numberOfSections])
@@ -608,11 +618,17 @@
         return [obj1 compare:obj2];
     }];
     
+    NSMutableArray *indexPathsToReload = [[NSMutableArray alloc] init];
     for(NSIndexPath *i in [self indexPathsBetween:[sortedIndexPathsForSelectedItems objectAtIndex:0] and:[sortedIndexPathsForSelectedItems objectAtIndex:1]])
     {
-        [calendarCollectionView selectItemAtIndexPath:i animated:NO scrollPosition:UICollectionViewScrollPositionNone];
+        if(((SCDatePickerViewCell *)[calendarCollectionView cellForItemAtIndexPath:i]).cellDateType == SCDatePickerViewCellDateTypeValid)
+        {
+            [calendarCollectionView selectItemAtIndexPath:i animated:NO scrollPosition:UICollectionViewScrollPositionNone];
+            [indexPathsToReload addObject:i];
+        }
+        
     }
-    [calendarCollectionView reloadItemsAtIndexPaths:[self indexPathsBetween:[sortedIndexPathsForSelectedItems objectAtIndex:0] and:[sortedIndexPathsForSelectedItems objectAtIndex:1]]];
+    [calendarCollectionView reloadItemsAtIndexPaths:indexPathsToReload];
 }
 
 - (BOOL)date:(NSDate *)date isBetween:(NSDate *)firstDate and:(NSDate *)secondDate
