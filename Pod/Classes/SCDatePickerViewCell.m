@@ -11,12 +11,11 @@
 @interface SCDatePickerViewCell ()
 
 @property (nonatomic, strong, readwrite) UILabel *dateLabel;
+@property (nonatomic, strong, readwrite) UIView *borderView;
 
 @end
 
 @implementation SCDatePickerViewCell
-
-@synthesize todayBackgroundView;
 
 - (id)initWithFrame:(CGRect)frame
 {
@@ -27,20 +26,10 @@
         self.dateLabel.textAlignment = NSTextAlignmentCenter;
         [self.contentView addSubview:self.dateLabel];
 
-        // today background
-        self.todayBackgroundView = [[UIImageView alloc] initWithFrame:self.contentView.frame];
-        self.todayBackgroundView.hidden = YES;
-        self.todayBackgroundView.layer.borderColor = [UIColor blackColor].CGColor;
-        self.todayBackgroundView.layer.borderWidth = 1.0f;
-        self.todayBackgroundView.layer.cornerRadius = self.contentView.frame.size.width/2;
-        [self.contentView addSubview:self.todayBackgroundView];
-        
-        UIView *lineView = [[UIView alloc] initWithFrame:CGRectMake(0.0f, frame.size.height-0.5f, frame.size.width, 0.5f)];
-        lineView.backgroundColor = [UIColor blackColor];
-        lineView.alpha = 0.25f;
-        [self.contentView addSubview:lineView];
-        
-        [self.contentView sendSubviewToBack:self.todayBackgroundView];
+        self.borderView = [[UIView alloc] initWithFrame:CGRectMake(0.0f, frame.size.height-0.5f, frame.size.width, 0.5f)];
+        self.borderView.backgroundColor = [UIColor blackColor];
+        self.borderView.alpha = 0.25f;
+        [self.contentView addSubview:self.borderView];
     }
     return self;
 }
@@ -49,7 +38,6 @@
 {
     [super prepareForReuse];
     self.dateLabel.text = nil;
-    self.todayBackgroundView.hidden = YES;
 }
 
 /*

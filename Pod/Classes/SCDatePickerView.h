@@ -31,7 +31,6 @@ typedef NS_ENUM(NSInteger, SCDatePickerVieWStyle) {
 - (UIColor *)datePickerView:(SCDatePickerView *)datePickerView invalidDateColorForDate:(NSDate *)date;
 
 - (UIView *)datePickerView:(SCDatePickerView *)datePickerView selectedBackgroundViewForDate:(NSDate *)date withFrame:(CGRect)frame;
-- (UIView *)datePickerView:(SCDatePickerView *)datePickerView todayBackgroundViewForDate:(NSDate *)date withFrame:(CGRect)frame;
 
 - (UIImage *)previousMonthImageForDatePickerView:(SCDatePickerView *)datePickerView;
 - (UIImage *)nextMonthImageForDatePickerView:(SCDatePickerView *)datePickerView;

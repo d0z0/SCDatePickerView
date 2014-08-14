@@ -17,7 +17,7 @@ typedef NS_ENUM(NSInteger, SCDatePickerViewCellDateType) {
 @interface SCDatePickerViewCell : UICollectionViewCell
 
 @property (nonatomic, strong, readonly) UILabel *dateLabel;
-@property (nonatomic, strong) UIView *todayBackgroundView;
+@property (nonatomic, strong, readonly) UIView *borderView;
 @property (nonatomic, assign) SCDatePickerViewCellDateType cellDateType;
 
 @end

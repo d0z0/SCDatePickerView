@@ -46,6 +46,13 @@
     return 50.0f;
 }
 
+- (UIView *)datePickerView:(SCDatePickerView *)datePickerView selectedBackgroundViewForDate:(NSDate *)date withFrame:(CGRect)frame
+{
+    UIImageView *tickView = [[UIImageView alloc] init];
+    tickView.contentMode = UIViewContentModeScaleAspectFit;
+    tickView.image = [UIImage imageNamed:@"calendar_marker.gif"];
+    return tickView;
+}
 
 
 @end

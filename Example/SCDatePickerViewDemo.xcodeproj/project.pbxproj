@@ -30,6 +30,7 @@
 		80C749DB196692E0009CFD94 /* SCDatePickerViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 80C749D3196692E0009CFD94 /* SCDatePickerViewCell.m */; };
 		80C749DD196692E0009CFD94 /* SCDatePickerViewFlowLayout.m in Sources */ = {isa = PBXBuildFile; fileRef = 80C749D5196692E0009CFD94 /* SCDatePickerViewFlowLayout.m */; };
 		80C749DE196692E0009CFD94 /* SCDatePickerViewHeader.m in Sources */ = {isa = PBXBuildFile; fileRef = 80C749D6196692E0009CFD94 /* SCDatePickerViewHeader.m */; };
+		80CDE39E199C9D1A00007F51 /* calendar_marker@2x.gif in Resources */ = {isa = PBXBuildFile; fileRef = 80CDE39D199C9D1A00007F51 /* calendar_marker@2x.gif */; };
 		9C97D8C8DC254C9B8C8EEBC8 /* libPods-Tests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 5E8800CFED9641FC8ABB7254 /* libPods-Tests.a */; };
 		AA0EB078DEC34DEEB78FCB88 /* libPods-SCDatePickerView.a in Frameworks */ = {isa = PBXBuildFile; fileRef = D6E526A55B804EEAAB15023C /* libPods-SCDatePickerView.a */; };
 /* End PBXBuildFile section */
@@ -84,6 +85,7 @@
 		80C749D7196692E0009CFD94 /* SCDatePickerViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SCDatePickerViewCell.h; path = ../../Pod/Classes/SCDatePickerViewCell.h; sourceTree = "<group>"; };
 		80C749D9196692E0009CFD94 /* SCDatePickerViewFlowLayout.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SCDatePickerViewFlowLayout.h; path = ../../Pod/Classes/SCDatePickerViewFlowLayout.h; sourceTree = "<group>"; };
 		80C749DA196692E0009CFD94 /* SCDatePickerViewHeader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SCDatePickerViewHeader.h; path = ../../Pod/Classes/SCDatePickerViewHeader.h; sourceTree = "<group>"; };
+		80CDE39D199C9D1A00007F51 /* calendar_marker@2x.gif */ = {isa = PBXFileReference; lastKnownFileType = image.gif; path = "calendar_marker@2x.gif"; sourceTree = "<group>"; };
 		8B037EAC501941CE973ADF11 /* Pods-SCDatePickerView.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SCDatePickerView.xcconfig"; path = "Pods/Pods-SCDatePickerView.xcconfig"; sourceTree = "<group>"; };
 		90C7AD83BE544FF2816BED35 /* Pods-Tests.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Tests.xcconfig"; path = "Pods/Pods-Tests.xcconfig"; sourceTree = "<group>"; };
 		D6E526A55B804EEAAB15023C /* libPods-SCDatePickerView.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-SCDatePickerView.a"; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -153,7 +155,6 @@
 		6003F593195388D20070C39A /* SCDatePickerView */ = {
 			isa = PBXGroup;
 			children = (
-				800C0E72199204330056A917 /* calendar.png */,
 				8092A52C196C1D0600344A96 /* Images */,
 				8023093C196BEA7C00282962 /* SCDatePickerView.h */,
 				802F76B619796EB900BE348B /* SCDatePickerView.m */,
@@ -221,6 +222,8 @@
 		8092A52C196C1D0600344A96 /* Images */ = {
 			isa = PBXGroup;
 			children = (
+				80CDE39D199C9D1A00007F51 /* calendar_marker@2x.gif */,
+				800C0E72199204330056A917 /* calendar.png */,
 				8092A52D196C1E3700344A96 /* glyph-left-arrow@2x.png */,
 				8092A52E196C1E3700344A96 /* glyph-right-arrow@2x.png */,
 			);
@@ -310,6 +313,7 @@
 			files = (
 				8092A530196C1E3700344A96 /* glyph-right-arrow@2x.png in Resources */,
 				800C0E73199204330056A917 /* calendar.png in Resources */,
+				80CDE39E199C9D1A00007F51 /* calendar_marker@2x.gif in Resources */,
 				802F76B919797A6200BE348B /* Main.storyboard in Resources */,
 				6003F5A9195388D20070C39A /* Images.xcassets in Resources */,
 				8092A52F196C1E3700344A96 /* glyph-left-arrow@2x.png in Resources */,
