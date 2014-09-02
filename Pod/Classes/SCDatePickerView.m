@@ -108,7 +108,15 @@
     {
         _selectedDate = [calendar dateFromComponents:[calendar components:NSDayCalendarUnit|NSMonthCalendarUnit|NSYearCalendarUnit fromDate:selectedDate]];
     }
-    [calendarCollectionView scrollToItemAtIndexPath:[self indexPathForDate:_selectedDate] atScrollPosition:UICollectionViewScrollPositionCenteredVertically animated:YES];
+    if(_selectedDate) {
+        if(self.continousCalendar) {
+            [calendarCollectionView scrollToItemAtIndexPath:[self indexPathForDate:_selectedDate] atScrollPosition:UICollectionViewScrollPositionCenteredVertically animated:YES];
+        }
+        else
+        {
+            // FIX ME -- move to offset
+        }
+    }
 }
 
 - (void)setSelectedEndDate:(NSDate *)selectedEndDate
