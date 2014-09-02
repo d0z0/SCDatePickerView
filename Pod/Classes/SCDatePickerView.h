@@ -56,6 +56,7 @@ typedef NS_ENUM(NSInteger, SCDatePickerVieWStyle) {
 @property (nonatomic, strong) UIFont *headerFont;
 @property (nonatomic, strong) UIFont *dayOfWeekFont;
 @property (nonatomic, strong) UIFont *dateFont;
+@property (nonatomic, strong) UIFont *selectedDateFont;
 @property (nonatomic, strong) NSDateFormatter *dateFormatter;
 @property (nonatomic, strong) NSDateFormatter *monthYearFormatter;
 

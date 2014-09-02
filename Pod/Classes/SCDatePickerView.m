@@ -72,6 +72,9 @@
     if(!self.dateFont)
         self.dateFont = [UIFont fontWithName:@"HelveticaNeue-Light" size:18.0f];
     
+    if(!self.selectedDateFont)
+        self.selectedDateFont = [UIFont fontWithName:@"HelveticaNeue-Medium" size:18.0f];
+
     self.dateFormatter.calendar = calendar;
     if(!self.dateFormatter)
     {
@@ -105,6 +108,7 @@
     {
         _selectedDate = [calendar dateFromComponents:[calendar components:NSDayCalendarUnit|NSMonthCalendarUnit|NSYearCalendarUnit fromDate:selectedDate]];
     }
+    [calendarCollectionView scrollToItemAtIndexPath:[self indexPathForDate:_selectedDate] atScrollPosition:UICollectionViewScrollPositionCenteredVertically animated:YES];
 }
 
 - (void)setSelectedEndDate:(NSDate *)selectedEndDate
@@ -134,10 +138,10 @@
     calendarCollectionView.backgroundColor = [UIColor whiteColor];
     
     calendarCollectionView.bounces = YES;
-    NSLog(@"range->%@", self.rangeSelection ? @"Y" : @"N");
     calendarCollectionView.allowsMultipleSelection = self.rangeSelection; //cont
     
     [self addSubview:calendarCollectionView];
+
 }
 
 - (UICollectionReusableView *)collectionView:(UICollectionView *)collectionView viewForSupplementaryElementOfKind:(NSString *)kind atIndexPath:(NSIndexPath *)indexPath
@@ -342,7 +346,6 @@
 
 - (BOOL)collectionView:(UICollectionView *)collectionView shouldDeselectItemAtIndexPath:(NSIndexPath *)indexPath
 {
-//    return NO;
     if(self.rangeSelection)
     {
         _selectedDate = nil;
@@ -356,10 +359,12 @@
 - (void)collectionView:(UICollectionView *)collectionView didDeselectItemAtIndexPath:(NSIndexPath *)indexPath
 {
     _selectedDate = nil;
-    if(self.rangeSelection)
+    if(self.rangeSelection) {
         [calendarCollectionView reloadData];
-    else
+    }
+    else {
         [calendarCollectionView reloadItemsAtIndexPaths:@[indexPath]];
+    }
 }
 
 - (BOOL)collectionView:(UICollectionView *)collectionView shouldHighlightItemAtIndexPath:(NSIndexPath *)indexPath
@@ -454,12 +459,13 @@
     if(cell.cellDateType == SCDatePickerViewCellDateTypeValid)
     {
         cell.tag = cellDateComponents.day;
-        
         if(cell.selected)
         {
+            cell.dateLabel.font = self.selectedDateFont;
             if([self.delegate respondsToSelector:@selector(datePickerView:selectedDateColorForDate:)])
             {
                 cell.dateLabel.textColor = [self.delegate datePickerView:self selectedDateColorForDate:cellDate];
+
             }
             else
             {
@@ -468,6 +474,7 @@
         }
         else
         {
+            cell.dateLabel.font = self.dateFont;
             if([self.delegate respondsToSelector:@selector(datePickerView:enabledDateColorForDate:)])
                 cell.dateLabel.textColor = [self.delegate datePickerView:self enabledDateColorForDate:cellDate];
             else
@@ -476,6 +483,7 @@
     }
     else if(cell.cellDateType == SCDatePickerViewCellDateTypeDisabled)
     {
+        cell.dateLabel.font = self.dateFont;
         if([self.delegate respondsToSelector:@selector(datePickerView:disabledDateColorForDate:)])
             cell.dateLabel.textColor = [self.delegate datePickerView:self disabledDateColorForDate:cellDate];
         else
@@ -483,6 +491,7 @@
     }
     else if(cell.cellDateType == SCDatePickerViewCellDateTypeInvalid)
     {
+        cell.dateLabel.font = self.dateFont;
         if([self.delegate respondsToSelector:@selector(datePickerView:invalidDateColorForDate:)])
         {
             cell.dateLabel.textColor = [self.delegate datePickerView:self invalidDateColorForDate:cellDate];
@@ -498,8 +507,6 @@
         cell.dateLabel.text = cell.cellDateType == SCDatePickerViewCellDateTypeDisabled ? @"" : [self.dateFormatter stringFromDate:cellDate];
     else
         cell.dateLabel.text = [self.dateFormatter stringFromDate:cellDate];
-    
-    cell.dateLabel.font = self.dateFont;
 
     cell.layer.shouldRasterize = YES;
     cell.layer.rasterizationScale = [UIScreen mainScreen].scale;
