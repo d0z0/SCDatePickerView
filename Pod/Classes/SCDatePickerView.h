@@ -13,7 +13,8 @@
 
 typedef NS_ENUM(NSInteger, SCDatePickerVieWStyle) {
     SCDatePickerViewStyleContinous,
-    SCDatePickerViewStylePaginated                 
+    SCDatePickerViewStylePaginated,
+    SCDatePickerViewStyleContinousWithRangeSelection
 };
 
 
