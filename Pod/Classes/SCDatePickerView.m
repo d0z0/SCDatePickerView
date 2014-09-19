@@ -356,12 +356,29 @@
 {
     if(self.rangeSelection)
     {
-        _selectedDate = nil;
-        _selectedEndDate = nil;
-        [calendarCollectionView reloadData];
-        return NO;
+        if([[self indexPathForDate:_selectedDate] isEqual:indexPath] && [[calendarCollectionView indexPathsForSelectedItems] count] == 1)
+        {
+            _selectedEndDate = _selectedDate;
+            if([self.delegate respondsToSelector:@selector(datePickerView:didSelectDateRangeFrom:to:)])
+            {
+                [self.delegate datePickerView:self didSelectDateRangeFrom:self.selectedDate to:self.selectedEndDate];
+            }
+            return NO;
+        }
+        else {
+            [self reset];
+            return NO;
+        }
     }
     return YES;
+}
+
+- (void)reset
+{
+    _selectedDate = nil;
+    _selectedEndDate = nil;
+    [calendarCollectionView reloadData];
+
 }
 
 - (void)collectionView:(UICollectionView *)collectionView didDeselectItemAtIndexPath:(NSIndexPath *)indexPath
@@ -414,9 +431,7 @@
     {
         if(self.rangeSelection == YES)
         {
-            _selectedDate = nil;
-            _selectedEndDate = nil;
-            [calendarCollectionView reloadData];
+            [self reset];
             return NO;
         }
         else
