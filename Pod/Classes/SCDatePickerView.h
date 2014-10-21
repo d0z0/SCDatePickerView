@@ -60,8 +60,7 @@ typedef NS_ENUM(NSInteger, SCDatePickerVieWStyle) {
 @property (nonatomic, strong) NSDateFormatter *dateFormatter;
 @property (nonatomic, strong) NSDateFormatter *monthYearFormatter;
 
-
-@property (nonatomic, assign) BOOL rangeSelection;
+@property (nonatomic, assign) SCDatePickerVieWStyle style;
 
 - (id)initWithFrame:(CGRect)frame style:(SCDatePickerVieWStyle)style;
 //- (void)selectDate:(NSDate *)date;

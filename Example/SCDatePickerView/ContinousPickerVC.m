@@ -30,4 +30,12 @@
     [[[self.view subviews] objectAtIndex:0] addSubview:datePickerView];
 }
 
+- (void)datePickerView:(SCDatePickerView *)datePickerView didSelectDateRangeFrom:(NSDate *)fromDate to:(NSDate *)toDate {
+    datePickerView.style = SCDatePickerViewStyleContinous;
+}
+
+- (void)datePickerView:(SCDatePickerView *)datePickerView didSelectDate:(NSDate *)date {
+    datePickerView.style = SCDatePickerViewStyleContinousWithRangeSelection;
+}
+
 @end
